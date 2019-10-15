@@ -62,5 +62,46 @@ namespace OnlineShop.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if(model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError(nameof(RegisterViewModel.Password), "Podane hasła nie są takie same");
+                    ModelState.AddModelError(nameof(RegisterViewModel.ConfirmPassword), "Podane hasła nie są takie same");
+                    return View(model);
+                }
+                var user = new AppUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, ApartmentNumber = model.ApartmentNumber,
+                    BuildingNumber = model.BuildingNumber, City = model.City, PhoneNumber = model.PhoneNumber, Street = model.Street, ZipCode = model.ZipCode };
+                var result = await userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    TempData["MessageSuccess"] = "Zarejestrowano i zalogowano pomyślnie";
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
+            return View(model);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+        }
     }
 }
