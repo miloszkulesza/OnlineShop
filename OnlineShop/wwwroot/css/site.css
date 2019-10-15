@@ -35,3 +35,8 @@ body {
         display: none;
     }
 }
+
+.input-validation-error {
+    border-color: red;
+    background-color: #fee;
+}
