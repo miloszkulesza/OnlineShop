@@ -1,14 +1,22 @@
-﻿@model IEnumerable<Product>
+﻿@model ProductsListViewModel
 @{
     ViewData["Title"] = "Katalog";
     Layout = "_CatalogLayout";
 }
 
-<h2>Katalog</h2>
-<hr />
+@if (Model.Category == null)
+{
+    <h2>Katalog</h2>
+    <hr />
+}
+else
+{
+    <h2>Katalog - @Model.Category.Name</h2>
+    <hr />
+}
 
-@foreach(var product in Model)
+
+@foreach (var product in Model.Products)
 {
     <partial name="_ProductCardPartial" model="@product" />
 }
-
