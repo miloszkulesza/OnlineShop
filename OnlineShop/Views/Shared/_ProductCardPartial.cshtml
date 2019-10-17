@@ -1,0 +1,17 @@
+﻿@model Product
+
+<div class="card" style="margin-bottom: 15px;">
+    <a asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+        <h5 class="card-header">@Model.Name</h5>
+    </a>
+    <div class="card-body">
+        <a asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+            <img src="@Url.ImagePath(Model.ImageName)" class="img-thumbnail align-content-center" style="float: left; height: 170px; margin-right: 10px;" />
+        </a>
+        <p class="card-text text-justify">@Model.Description</p>
+    </div>
+    <div class="card-footer">
+        <b style="font-size: 22px;">@Model.Price.ToString("c")</b>
+        <button class="btn btn-primary" style="float: right;">Do koszyka</button>
+    </div>
+</div>

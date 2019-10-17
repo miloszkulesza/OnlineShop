@@ -5,4 +5,10 @@
 }
 
 <h2>Katalog</h2>
+<hr />
+
+@foreach(var product in Model)
+{
+    <partial name="_ProductCardPartial" model="@product" />
+}
 

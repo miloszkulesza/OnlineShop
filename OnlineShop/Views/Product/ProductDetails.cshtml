@@ -1,0 +1,10 @@
+﻿@model ProductDetailsViewModel
+
+<h3>@Model.Product.Name</h3>
+<hr />
+<img src="@Url.ImagePath(Model.Product.ImageName)" class="img-thumbnail mx-auto" style="display: block; margin-bottom: 10px;" /><br />
+<p class="text-justify">@Model.Product.Description</p><br />
+<b>Cena: </b> @Model.Product.Price.ToString()<br />
+<b>Ilość: </b> @Model.Product.Quantity szt.<br /><br />
+<a class="btn btn-primary" href="">Dodaj do koszyka</a>
+<a class="btn btn-info" href="@Model.ReturnUrl">Powrót</a>
