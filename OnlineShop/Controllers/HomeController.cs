@@ -17,20 +17,21 @@ namespace OnlineShop.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "Tutaj będą informacje o firmie.";
 
             return View();
         }
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Message"] = "Tutaj będą dane kontaktowe.";
 
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Regulations()
         {
+            ViewData["Message"] = "Tutaj będzie regulamin sklepu";
             return View();
         }
 

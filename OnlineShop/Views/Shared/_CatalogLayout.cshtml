@@ -46,7 +46,10 @@
 
     <div class="container">
         <div class="row m-1 p-1">
-            <div class="col-12">
+            <div id="categories" class="col-3" style="margin-top: 130px;">
+                @await Component.InvokeAsync("CategoriesList")
+            </div>
+            <div class="col-9">
                 @RenderBody()
             </div>
             <footer class="col-12 text-center"><hr />Online Shop ©2020</footer>
