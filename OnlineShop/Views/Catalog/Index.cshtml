@@ -8,36 +8,27 @@
 {
     <h2>Katalog</h2>
     <hr />
-    <form asp-action="SetPageSize" asp-controller="Catalog" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" method="post" class="col-2 form-inline" style="margin-bottom: 10px;">
-        <div class="form-group">
-            <label class="col-form-label-sm">Ilość na stronę </label>
-            <select asp-for="@Model.PagingInfo.ItemsPerPage" class="form-control" style="margin-left: 10px;" onchange="this.form.submit()">
-                <option value="1">1</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
-        </div>
-    </form>
 }
 else
 {
     <h2>Katalog - @Model.Category.Name</h2>
     <hr />
-    <form asp-action="SetPageSize" asp-controller="Catalog" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" method="post" class="col-2 form-inline" style="margin-bottom: 10px;">
-        <div class="form-group">
-            <label class="col-form-label-sm">Ilość na stronę </label>
-            <select asp-for="@Model.PagingInfo.ItemsPerPage" class="form-control" style="margin-left: 10px;" onchange="this.form.submit()">
-                <option value="1">1</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
-        </div>
-    </form>
 }
+
+<form asp-action="SetPageSize" asp-controller="Catalog" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" method="post" class="col-2 form-inline" style="margin-bottom: 10px;">
+    @Html.AntiForgeryToken()
+    <input hidden asp-for="@Model.Category.Id" />
+    <div class="form-group">
+        <label class="col-form-label-sm">Ilość na stronę </label>
+        <select asp-for="@Model.PagingInfo.ItemsPerPage" class="form-control" style="margin-left: 10px;" onchange="this.form.submit()">
+            <option value="1">1</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+        </select>
+    </div>
+</form>
 
 
 @foreach (var product in Model.Products)

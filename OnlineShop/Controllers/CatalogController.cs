@@ -55,10 +55,13 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        public IActionResult SetPageSize(ProductsListViewModel model, string returnUrl)
+        [ValidateAntiForgeryToken]
+        public IActionResult SetPageSize(ProductsListViewModel model)
         {
             PageSize = model.PagingInfo.ItemsPerPage;
-            return Redirect(returnUrl);
+            if (model.Category == null)
+                return RedirectToAction("Index", new { productPage = 1 });
+            return RedirectToAction("Index", new { categoryId = model.Category.Id, productPage = 1 });
         }
     }
 }
