@@ -14,6 +14,8 @@ namespace OnlineShop.Controllers
         private IProductRepository productRepository;
         private ICategoryRepository categoryRepository;
 
+        public static int PageSize { get; set; } = 10;
+
         public CatalogController(IProductRepository productRepository,
             ICategoryRepository categoryRepository)
         {
@@ -21,23 +23,42 @@ namespace OnlineShop.Controllers
             this.categoryRepository = categoryRepository;
         }
 
-        public IActionResult Index(string categoryId)
+        public IActionResult Index(string categoryId, int productPage = 1)
         {
             ProductsListViewModel productsViewModel;
             if (categoryId == null)
             {
                 productsViewModel = new ProductsListViewModel
                 {
-                    Products = productRepository.Products.OrderBy(p => p.DateOfAddition).ToList()
+                    Products = productRepository.Products.OrderBy(p => p.DateOfAddition).Skip((productPage - 1) * PageSize).Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        CurrentPage = productPage,
+                        ItemsPerPage = PageSize,
+                        TotalItems = productRepository.Products.Count()
+                    }
                 };
                 return View(productsViewModel);
             }
             productsViewModel = new ProductsListViewModel
             {
-                Products = productRepository.Products.Where(p => p.Category.Id == categoryId).OrderBy(p => p.DateOfAddition).ToList(),
-                Category = categoryRepository.Categories.FirstOrDefault(c => c.Id == categoryId)
+                Products = productRepository.Products.Where(x => x.Category.Id == categoryId).OrderBy(p => p.DateOfAddition).Skip((productPage - 1) * PageSize).Take(PageSize),
+                Category = categoryRepository.Categories.FirstOrDefault(c => c.Id == categoryId),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = productPage,
+                    ItemsPerPage = PageSize,
+                    TotalItems = productRepository.Products.Where(p => p.Category.Id == categoryId).Count()
+                }
             };
             return View(productsViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult SetPageSize(ProductsListViewModel model, string returnUrl)
+        {
+            PageSize = model.PagingInfo.ItemsPerPage;
+            return Redirect(returnUrl);
         }
     }
 }
