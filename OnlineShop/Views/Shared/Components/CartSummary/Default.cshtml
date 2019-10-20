@@ -1,0 +1,8 @@
+﻿@model Cart
+
+<div class="nav-item">
+    <a class="nav-link" asp-controller="Cart" asp-action="Index" asp-route-returnurl="@ViewContext.HttpContext.Request.PathAndQuery()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge badge-primary">@Model.TotalQuantity()</span>
+    </a>
+</div>

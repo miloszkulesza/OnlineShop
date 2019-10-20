@@ -1,0 +1,68 @@
+﻿@model CartIndexViewModel
+@{
+    ViewData["Title"] = "Twój koszyk";
+}
+
+<h2>@ViewData["Title"]</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Ilość</th>
+            <th>Produkt</th>
+            <th class="text-right">Cena</th>
+            <th class="text-right">Wartość</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.Cart.TotalQuantity() == 0)
+        {
+            <tr>
+                <td colspan="4">
+                    <div class="alert alert-danger text-center">
+                        Brak produktów w koszyku
+                    </div>
+                </td>
+            </tr>
+        }
+        @foreach (var line in Model.Cart.Lines)
+        {
+            <tr>
+                <td class="text-center">@line.Quantity</td>
+                <td class="text-left">@line.Product.Name</td>
+                <td class="text-right">@line.Product.Price.ToString("c")</td>
+                <td class="text-right">
+                    @((line.Quantity * line.Product.Price).ToString("c"))
+                </td>
+                <td>
+                    <form asp-action="RemoveFromCart" method="post">
+                        <input type="hidden" name="ProductID" value="@line.Product.Id" />
+                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right">Razem:</td>
+            <td class="text-right">
+                @Model.Cart.ComputeTotalValue().ToString("c")
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="text-center">
+    <a class="btn btn-primary" href="@Model.ReturnUrl">Kontynuuj zakupy</a>
+    @if (Model.Cart.TotalQuantity() == 0)
+    {
+        <a class="btn btn-success disabled" asp-action="Checkout" asp-controller="Order">Zamów</a>
+    }
+    else
+    {
+        <a class="btn btn-success" asp-action="Checkout" asp-controller="Order">Zamów</a>
+    }
+</div>

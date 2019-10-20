@@ -12,6 +12,6 @@
     </div>
     <div class="card-footer">
         <b style="font-size: 22px;">@Model.Price.ToString("c")</b>
-        <button class="btn btn-primary" style="float: right;">Do koszyka</button>
+        <a class="btn btn-primary" style="float: right;" asp-action="AddToCart" asp-controller="Cart" asp-route-productId="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Do koszyka</a>
     </div>
 </div>

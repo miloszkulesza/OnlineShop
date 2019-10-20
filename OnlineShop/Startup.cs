@@ -43,6 +43,8 @@ namespace OnlineShop
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddSession();
             services.AddMemoryCache();
+            services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
