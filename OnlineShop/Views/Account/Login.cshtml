@@ -6,9 +6,7 @@
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="Login" method="post">
-    <div class="text-danger">
-        @Html.ValidationSummary()
-    </div>
+    <div class="text-danger" asp-validation-summary="All"></div>
     <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
     <div class="form-group">
         <label asp-for="Email">Adres email</label>

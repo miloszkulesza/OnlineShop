@@ -1,0 +1,52 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Złóż zamówienie";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form asp-action="CreateOrder" asp-controller="Order" method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <h3>Wypełnij dane do wysyłki produktów</h3>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Street"></label>
+        <input asp-for="Street" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="BuildingNumber"></label>
+        <input asp-for="BuildingNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ApartmentNumber"></label>
+        <input asp-for="ApartmentNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PostalCode"></label>
+        <input asp-for="PostalCode" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="City"></label>
+        <input asp-for="City" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Comment"></label>
+        <textarea asp-for="Comment" class="form-control"></textarea>
+    </div>
+    <a class="btn btn-warning" id="" href="@Url.Action("Index","Cart")">Wróć do koszyka</a>
+    <input type="submit" class="btn btn-success" style="" value="Złóż zamówienie" />
+</form>

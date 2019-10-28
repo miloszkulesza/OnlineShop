@@ -27,8 +27,8 @@
         @foreach (var line in Model.Cart.Lines)
         {
             <tr>
-                <td class="text-center">@line.Quantity</td>
-                <td class="text-left">@line.Product.Name</td>
+                <td class="text-center" style="width:10%;"><input asp-for="@line.Quantity" value="@line.Quantity" /></td>
+                <td class="text-left"><a asp-action="ProductDetails" asp-controller="Product" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-route-productId="@line.Product.Id" class="nav-link">@line.Product.Name</a></td>
                 <td class="text-right">@line.Product.Price.ToString("c")</td>
                 <td class="text-right">
                     @((line.Quantity * line.Product.Price).ToString("c"))
@@ -59,10 +59,10 @@
     <a class="btn btn-primary" href="@Model.ReturnUrl">Kontynuuj zakupy</a>
     @if (Model.Cart.TotalQuantity() == 0)
     {
-        <a class="btn btn-success disabled" asp-action="Checkout" asp-controller="Order">Zamów</a>
+        <a class="btn btn-success disabled" asp-action="CreateOrder" asp-controller="Order">Zamów</a>
     }
     else
     {
-        <a class="btn btn-success" asp-action="Checkout" asp-controller="Order">Zamów</a>
+        <a class="btn btn-success" asp-action="CreateOrder" asp-controller="Order">Zamów</a>
     }
 </div>

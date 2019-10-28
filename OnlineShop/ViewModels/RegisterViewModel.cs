@@ -19,10 +19,10 @@ namespace OnlineShop.ViewModels
         public string Street { get; set; }
         [Required(ErrorMessage = "Podaj numer budynku")]
         [Display(Name = "Nr budynku")]
-        public int BuildingNumber { get; set; }
+        public string BuildingNumber { get; set; }
         [Required(ErrorMessage = "Podaj numer lokalu")]
         [Display(Name = "Nr lokalu")]
-        public int? ApartmentNumber { get; set; }
+        public string ApartmentNumber { get; set; }
         [Required(ErrorMessage = "Podaj miasto")]
         [Display(Name = "Miasto")]
         public string City { get; set; }
