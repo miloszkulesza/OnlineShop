@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.Data;
 
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191028184844_Order")]
+    partial class Order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,79 +208,6 @@ namespace OnlineShop.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("OnlineShop.Models.Order", b =>
-                {
-                    b.Property<string>("OrderId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ApartmentNumber");
-
-                    b.Property<string>("BuildingNumber")
-                        .IsRequired();
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Comment");
-
-                    b.Property<DateTime>("DateOfAddition");
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<int>("OrderStatus");
-
-                    b.Property<decimal>("OrderValue");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(12);
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasMaxLength(6);
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.OrderPosition", b =>
-                {
-                    b.Property<string>("OrderPositionId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("OrderId");
-
-                    b.Property<string>("ProductName");
-
-                    b.Property<decimal>("PurchasePrice");
-
-                    b.Property<int>("Quantity");
-
-                    b.HasKey("OrderPositionId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderPositions");
-                });
-
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -348,20 +277,6 @@ namespace OnlineShop.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.Order", b =>
-                {
-                    b.HasOne("OnlineShop.Models.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.OrderPosition", b =>
-                {
-                    b.HasOne("OnlineShop.Models.Order", "Order")
-                        .WithMany("OrderPosition")
-                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Product", b =>

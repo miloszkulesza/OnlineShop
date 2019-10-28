@@ -42,5 +42,6 @@ namespace OnlineShop.ViewModels
         [Required(ErrorMessage = "Podaj email")]
         [Display(Name = "Email")]
         public string Email { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

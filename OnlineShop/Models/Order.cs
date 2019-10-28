@@ -9,7 +9,7 @@ namespace OnlineShop.Models
     public class Order
     {
         [Key]
-        public string OrderId { get; set; } = Guid.NewGuid().ToString();
+        public string OrderId { get; set; }
         public string UserId { get; set; }
         public virtual AppUser User { get; set; }
         [Required(ErrorMessage = "Wprowadź imię")]

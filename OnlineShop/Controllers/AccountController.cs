@@ -64,9 +64,13 @@ namespace OnlineShop.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl)
         {
-            return View();
+            var vm = new RegisterViewModel
+            {
+                ReturnUrl = returnUrl
+            };
+            return View(vm);
         }
 
         [HttpPost]
@@ -88,6 +92,8 @@ namespace OnlineShop.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, isPersistent: false);
+                    if (model.ReturnUrl != null)
+                        return Redirect(model.ReturnUrl);
                     TempData["MessageSuccess"] = "Zarejestrowano i zalogowano pomyślnie";
                     return RedirectToAction("Index", "Home");
                 }

@@ -41,6 +41,8 @@ namespace OnlineShop
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderPositionRepository, OrderPositionRepository>();
             services.AddSession();
             services.AddMemoryCache();
             services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));

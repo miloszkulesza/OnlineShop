@@ -6,5 +6,5 @@
 <p class="text-justify">@Model.Product.Description</p><br />
 <b>Cena: </b> @Model.Product.Price.ToString()<br />
 <b>Ilość: </b> @Model.Product.Quantity szt.<br /><br />
-<a class="btn btn-primary" href="">Dodaj do koszyka</a>
+<a class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-productId="@Model.Product.Id" asp-route-returnUrl="@Model.ReturnUrl">Dodaj do koszyka</a>
 <a class="btn btn-info" href="@Model.ReturnUrl">Powrót</a>
