@@ -1,0 +1,29 @@
+﻿@model SearchViewModel
+
+@{
+    ViewData["Title"] = "Szukaj";
+}
+
+@if (Model != null)
+{
+    if (Model.AnySearchingProductExists)
+    {
+        <h2>Wyniki wyszukiwania dla frazy: @Model.SearchText</h2>
+        <hr />
+        <ul>
+            @foreach (var product in Model.Products)
+            {
+                <partial name="_ProductCardPartial", model="product" />
+            }
+        </ul>
+    }
+    else
+    {
+        <h3>Brak wyników wyszukiwania dla frazy: </h3>
+        <h2 style="color: green">@Model.SearchText</h2>
+    }
+}
+else
+{
+    <h3>Nie podano frazy do wyszukania.</h3>
+}
