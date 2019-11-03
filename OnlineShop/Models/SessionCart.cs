@@ -39,5 +39,11 @@ namespace OnlineShop.Models
             base.Clear();
             Session.Remove("Cart");
         }
+
+        public override void DeleteOneFromCart(int cartLineId)
+        {
+            base.DeleteOneFromCart(cartLineId);
+            Session.SetJson("Cart", this);
+        }
     }
 }

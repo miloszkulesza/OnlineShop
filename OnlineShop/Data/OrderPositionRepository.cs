@@ -29,7 +29,6 @@ namespace OnlineShop.Data
                 if (dbEntry != null)
                 {
                     dbEntry.OrderId = orderPosition.OrderId;
-                    dbEntry.ProductName = orderPosition.ProductName;
                     dbEntry.PurchasePrice = orderPosition.PurchasePrice;
                     dbEntry.Quantity = orderPosition.Quantity;
                 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
 using OnlineShop.Models;
 using OnlineShop.ViewModels;
@@ -81,7 +82,7 @@ namespace OnlineShop.Controllers
                 {
                     var newOrderPosition = new OrderPosition()
                     {
-                        ProductName = line.Product.Name,
+                        Product = line.Product,
                         Quantity = line.Quantity,
                         PurchasePrice = line.Product.Price * line.Quantity,
                         OrderId = newOrder.OrderId
@@ -98,6 +99,23 @@ namespace OnlineShop.Controllers
             }
             else
                 return View(order);
+        }
+
+        public async Task<IActionResult> History()
+        {
+            var user = await userManager.GetUserAsync(User);
+            var orders = orderRepository.Orders.Where(x => x.UserId == user.Id).OrderByDescending(x => x.DateOfAddition).ToList();
+            return View(orders);
+        }
+
+        public IActionResult OrderDetails(string orderId)
+        {
+            var vm = new OrderDetailsViewModel
+            {
+                Order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == orderId),
+                OrderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(x => x.OrderId == orderId).ToList()
+            };
+            return View(vm);
         }
     }
 }

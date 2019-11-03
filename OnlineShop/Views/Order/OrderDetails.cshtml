@@ -1,0 +1,60 @@
+﻿@model OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "Szczegóły zamówienia";
+}
+<h2>@ViewData["Title"] nr @Model.Order.OrderId</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Ilość</th>
+            <th>Wartość</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var position in Model.OrderPositions)
+        {
+            <tr>
+                <td><a class="nav-link" asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@position.Product.Id" 
+                       asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">@position.Product.Name</a></td>
+                <td>@position.Quantity</td>
+                <td>@position.PurchasePrice</td>
+            </tr>
+        }
+        <tr>
+            <td colspan="2" class="text-right">Razem:</td>
+            <td>@Model.Order.OrderValue.ToString("c")</td>
+        </tr>
+    </tbody>
+</table>
+<div class="text-justify">
+    <b>Uwagi do zamówienia: </b>
+    @if (Model.Order.Comment != null)
+    {
+        @Model.Order.Comment<br />
+        <b>Stan zamówienia:</b> @EnumHelpers.GetDisplayName(Model.Order.OrderStatus)
+        <br /><hr />
+    }
+    else
+    {
+        @:Brak<br />
+        <b>Stan zamówienia:</b> @EnumHelpers.GetDisplayName(Model.Order.OrderStatus)<hr />
+    }
+</div>
+<h3>Dane do faktury:</h3>
+@Model.Order.FirstName @Model.Order.LastName
+<br />
+@Model.Order.Email
+<br />
+@Model.Order.Street @Model.Order.BuildingNumber
+@if (Model.Order.ApartmentNumber != null)
+{
+    @:lok. @Model.Order.ApartmentNumber
+}
+<br />
+@Model.Order.PostalCode @Model.Order.City
+<br />
+@Model.Order.PhoneNumber
+<hr />
+<a class="btn btn-primary" asp-action="History" asp-controller="Order">Powrót</a>

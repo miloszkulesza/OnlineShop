@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
@@ -6,14 +6,16 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <form asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="nav-item">
-                <a class="nav-link" asp-action="Manage" asp-controller="Account" title="Manage">Witaj @UserManager.FindByNameAsync(User.Identity.Name).Result.FirstName!</a>
-            </li>
-            <li>
-                <button type="submit" class="btn btn-link navbar-btn nav-link">Wyloguj</button>
-            </li>
-        </ul>
+        <div class="dropdown nav navbar-nav navbar-right">
+            <a class="nav-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;">
+                @UserManager.FindByNameAsync(User.Identity.Name).Result.FirstName
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" asp-action="History" asp-controller="Order">Moje zamówienia</a>
+                <input type="submit" class="dropdown-item" value="Wyloguj się" />
+            </div>
+        </div>
+
     </form>
 }
 else

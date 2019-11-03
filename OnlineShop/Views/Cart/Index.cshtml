@@ -3,10 +3,16 @@
     ViewData["Title"] = "Twój koszyk";
 }
 
-@if(TempData["SuccessMessage"] != null)
+@if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success text-center">
         @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
     </div>
 }
 
@@ -21,7 +27,7 @@
         </tr>
     </thead>
     <tbody>
-        @if(Model.Cart.TotalQuantity() == 0)
+        @if (Model.Cart.TotalQuantity() == 0)
         {
             <tr>
                 <td colspan="4">
@@ -34,7 +40,18 @@
         @foreach (var line in Model.Cart.Lines)
         {
             <tr>
-                <td class="text-center" style="width:10%;"><input asp-for="@line.Quantity" value="@line.Quantity" /></td>
+                <td class="text-center">
+                    <a asp-action="DeleteOneFromCart" asp-controller="Cart" asp-route-cartLineId="@line.CartLineID" class="btn btn-sm btn-warning">-</a>
+                    @line.Quantity
+                    @if (line.Product.Quantity == line.Quantity)
+                    {
+                        <a asp-action="AddOneToCart" asp-controller="Cart" asp-route-cartLineId="@line.CartLineID" class="btn btn-sm btn-success disabled">+</a>
+                    }
+                    else
+                    {
+                        <a asp-action="AddOneToCart" asp-controller="Cart" asp-route-cartLineId="@line.CartLineID" class="btn btn-sm btn-success">+</a>
+                    }
+                </td>
                 <td class="text-left"><a asp-action="ProductDetails" asp-controller="Product" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-route-productId="@line.Product.Id" class="nav-link">@line.Product.Name</a></td>
                 <td class="text-right">@line.Product.Price.ToString("c")</td>
                 <td class="text-right">
