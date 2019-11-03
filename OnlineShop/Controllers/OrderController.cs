@@ -36,6 +36,11 @@ namespace OnlineShop.Controllers
 
         public async Task<IActionResult> CreateOrder()
         {
+            if(cartService.Lines.Count() == 0)
+            {
+                TempData["ErrorMessage"] = "Brak produktów w koszyku";
+                return RedirectToAction("Index", new { controller = "Cart" });
+            }
             var user = await userManager.GetUserAsync(User);
             var order = new CreateOrderViewModel
             {
