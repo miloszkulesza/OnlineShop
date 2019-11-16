@@ -1,0 +1,101 @@
+﻿@model ManageAccountViewModel
+@{
+    ViewData["Title"] = "Mój profil";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<h2>Dane wysyłkowe i kontaktowe</h2>
+<hr />
+
+<form asp-action="Manage" asp-controller="Account" method="post">
+    <input type="hidden" asp-for="ReturnUrl" value="@Model.ReturnUrl" />
+    <div class="form-group">
+        <label asp-for="EditAccount.Email"></label>
+        <div><span asp-validation-for="EditAccount.Email" class="text-danger"></span></div>
+        <input asp-for="EditAccount.Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.FirstName"></label>
+        <div><span asp-validation-for="EditAccount.FirstName" class="text-danger"></span></div>
+        <input asp-for="EditAccount.FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.LastName"></label>
+        <div><span asp-validation-for="EditAccount.LastName" class="text-danger"></span></div>
+        <input asp-for="EditAccount.LastName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.PhoneNumber"></label>
+        <div><span asp-validation-for="EditAccount.PhoneNumber" class="text-danger"></span></div>
+        <input asp-for="EditAccount.PhoneNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.Street"></label>
+        <div><span asp-validation-for="EditAccount.Street" class="text-danger"></span></div>
+        <input asp-for="EditAccount.Street" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.BuildingNumber"></label>
+        <div><span asp-validation-for="EditAccount.BuildingNumber" class="text-danger"></span></div>
+        <input asp-for="EditAccount.BuildingNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.ApartmentNumber"></label>
+        <div><span asp-validation-for="EditAccount.ApartmentNumber" class="text-danger"></span></div>
+        <input asp-for="EditAccount.ApartmentNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.City"></label>
+        <div><span asp-validation-for="EditAccount.City" class="text-danger"></span></div>
+        <input asp-for="EditAccount.City" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EditAccount.ZipCode"></label>
+        <div><span asp-validation-for="EditAccount.ZipCode" class="text-danger"></span></div>
+        <input asp-for="EditAccount.ZipCode" class="form-control" />
+    </div>
+    <a class="btn btn-primary" href="@Model.ReturnUrl">Powrót</a>
+    <button type="submit" class="btn btn-success">Zapisz</button>
+</form>
+<br />
+
+<h2>Zmień hasło</h2>
+<hr />
+<form asp-action="ChangePassword" asp-controller="Account">
+    <input type="hidden" asp-for="ReturnUrl" value="@Model.ReturnUrl" />
+    <input type="hidden" asp-for="EditAccount.ApartmentNumber" value="@Model.EditAccount.ApartmentNumber" />
+    <input type="hidden" asp-for="EditAccount.BuildingNumber" value="@Model.EditAccount.BuildingNumber" />
+    <input type="hidden" asp-for="EditAccount.City" value="@Model.EditAccount.City" />
+    <input type="hidden" asp-for="EditAccount.Email" value="@Model.EditAccount.Email" />
+    <input type="hidden" asp-for="EditAccount.FirstName" value="@Model.EditAccount.FirstName" />
+    <input type="hidden" asp-for="EditAccount.LastName" value="@Model.EditAccount.LastName" />
+    <input type="hidden" asp-for="EditAccount.PhoneNumber" value="@Model.EditAccount.PhoneNumber" />
+    <input type="hidden" asp-for="EditAccount.Street" value="@Model.EditAccount.Street" />
+    <input type="hidden" asp-for="EditAccount.ZipCode" value="@Model.EditAccount.ZipCode" />
+
+    <div class="form-group">
+        <label asp-for="ChangePassword.Password"></label>
+        <div><span asp-validation-for="ChangePassword.Password" class="text-danger"></span></div>
+        <input asp-for="ChangePassword.Password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ChangePassword.ConfirmPassword"></label>
+        <div><span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span></div>
+        <input asp-for="ChangePassword.ConfirmPassword" class="form-control" />
+    </div>
+    <a class="btn btn-primary" href="@Model.ReturnUrl">Powrót</a>
+    <button type="submit" class="btn btn-success">Zmień hasło</button>
+</form>

@@ -15,12 +15,15 @@ namespace OnlineShop.Controllers
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
+        private IPasswordHasher<AppUser> passwordHasher;
 
         public AccountController(UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            IPasswordHasher<AppUser> passwordHasher)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.passwordHasher = passwordHasher;
         }
 
         [AllowAnonymous]
@@ -76,7 +79,7 @@ namespace OnlineShop.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -100,6 +103,86 @@ namespace OnlineShop.Controllers
                 AddErrors(result);
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Manage(string returnUrl)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var vm = new ManageAccountViewModel
+            {
+                ChangePassword = new ChangePasswordViewModel(),
+                EditAccount = new EditAccountViewModel
+                {
+                    Email = user.Email,
+                    ApartmentNumber = user.ApartmentNumber,
+                    BuildingNumber = user.BuildingNumber,
+                    City = user.City,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Street = user.Street,
+                    ZipCode = user.ZipCode
+                },
+                ReturnUrl = returnUrl
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Manage(ManageAccountViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                user.ApartmentNumber = model.EditAccount.ApartmentNumber;
+                user.BuildingNumber = model.EditAccount.BuildingNumber;
+                user.City = model.EditAccount.City;
+                user.Email = model.EditAccount.Email;
+                user.FirstName = model.EditAccount.FirstName;
+                user.LastName = model.EditAccount.LastName;
+                user.NormalizedEmail = model.EditAccount.Email;
+                user.NormalizedUserName = model.EditAccount.Email;
+                user.PhoneNumber = model.EditAccount.PhoneNumber;
+                user.Street = model.EditAccount.Street;
+                user.UserName = model.EditAccount.Email;
+                user.ZipCode = model.EditAccount.ZipCode;
+                try
+                {
+                    var result = await userManager.UpdateAsync(user);
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+                TempData["SuccessMessage"] = "Udało się zapisać zmiany";
+                return View(model);
+            }
+            TempData["ErrorMessage"] = "Uzupełnij poprawnie formularz zmiany danych";
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ManageAccountViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                user.PasswordHash = passwordHasher.HashPassword(user, model.ChangePassword.Password);
+                try
+                {
+                    var result = await userManager.UpdateAsync(user);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                model.ChangePassword = new ChangePasswordViewModel();
+                TempData["SuccessMessage"] = "Udało się zmienić hasło";
+                return View("Manage", model);
+            }
+            TempData["ErrorMessage"] = "Uzupełnij poprawnie formularz zmiany hasła";
+            model.ChangePassword = new ChangePasswordViewModel();
+            return View("Manage", model);
         }
 
         private void AddErrors(IdentityResult result)

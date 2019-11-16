@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.ViewModels
 {
-    public class RegisterViewModel
+    public class EditAccountViewModel
     {
         [Required(ErrorMessage = "Podaj imie")]
         [Display(Name = "Imię")]
@@ -31,15 +31,8 @@ namespace OnlineShop.ViewModels
         [RegularExpression(@"(\+\d{2})*[\d\s-]+", ErrorMessage = "Zły format numeru telefonu")]
         [Display(Name = "Telefon")]
         public string PhoneNumber { get; set; }
-        [Required(ErrorMessage = "Podaj hasło")]
-        [Display(Name = "Hasło")]
-        public string Password { get; set; }
-        [Required(ErrorMessage = "Wpisz ponownie hasło")]
-        [Display(Name = "Potwierdź hasło")]
-        public string ConfirmPassword { get; set; }
         [Required(ErrorMessage = "Podaj email")]
         [Display(Name = "Email")]
         public string Email { get; set; }
-        public string ReturnUrl { get; set; }
     }
 }
