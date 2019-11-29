@@ -165,6 +165,10 @@ namespace OnlineShop.Data
                     new IdentityRole
                     {
                         Name = "Użytkownik"
+                    },
+                    new IdentityRole
+                    {
+                        Name = "Pracownik"
                     }
                 );
             }

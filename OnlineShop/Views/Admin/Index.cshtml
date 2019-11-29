@@ -1,3 +1,48 @@
-﻿<div>
-    Panel administracyjny
+﻿@{ 
+    ViewData["Title"] = "Panel administracyjny";
+}
+
+<h2>Panel administracyjny</h2>
+<hr />
+
+<div class="row">
+    <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
+        <img class="card-img-top img-thumbnail" src="@Url.IconPath("product-icon.png")">
+        <div class="card-body">
+            <h5 class="card-title">Produkty</h5>
+            <a asp-action="Products" class="btn btn-primary">Przejdź</a>
+        </div>
+    </div>
+
+    <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
+        <img class="card-img-top img-thumbnail" src="@Url.IconPath("category-icon.png")">
+        <div class="card-body">
+            <h5 class="card-title">Kategorie</h5>
+            <a asp-action="Categories" class="btn btn-primary">Przejdź</a>
+        </div>
+    </div>
+
+    <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
+        <img class="card-img-top img-thumbnail" src="@Url.IconPath("user-groups-icon.png")">
+        <div class="card-body">
+            <h5 class="card-title">Grupy</h5>
+            <a asp-action="Roles" class="btn btn-primary">Przejdź</a>
+        </div>
+    </div>
+
+    <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
+        <img class="card-img-top img-thumbnail" src="@Url.IconPath("users-icon.png")">
+        <div class="card-body">
+            <h5 class="card-title">Użytkownicy</h5>
+            <a asp-action="Users" class="btn btn-primary">Przejdź</a>
+        </div>
+    </div>
+
+    <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
+        <img class="card-img-top img-thumbnail" src="@Url.IconPath("orders-icon.png")">
+        <div class="card-body">
+            <h5 class="card-title">Zamówienia</h5>
+            <a asp-action="Orders" class="btn btn-primary">Przejdź</a>
+        </div>
+    </div>
 </div>

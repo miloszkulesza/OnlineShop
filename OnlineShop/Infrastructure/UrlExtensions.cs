@@ -13,6 +13,13 @@ namespace OnlineShop.Infrastructure
             return absolutePath;
         }
 
+        public static string IconPath(this IUrlHelper helper, string nameOfImage)
+        {
+            var path = Path.Combine("~/images/icons/", nameOfImage);
+            var absolutePath = helper.Content(path);
+            return absolutePath;
+        }
+
         public static string PathAndQuery(this HttpRequest request) => request.QueryString.HasValue ? $"{request.Path}{request.QueryString}" : request.Path.ToString();
     }
 }
