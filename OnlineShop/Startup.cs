@@ -18,6 +18,7 @@ namespace OnlineShop
 {
     public class Startup
     {
+        private DbInitializer dbInitializer;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -45,10 +46,13 @@ namespace OnlineShop
             services.AddTransient<IOrderPositionRepository, OrderPositionRepository>();
             services.AddSession();
             services.AddMemoryCache();
-            services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
+            services.AddScoped<Cart>(x => SessionCart.GetCart(x));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            var sp = services.BuildServiceProvider();
+            dbInitializer = new DbInitializer(sp.GetService<UserManager<AppUser>>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +83,7 @@ namespace OnlineShop
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            DbInitializer.Seed(app);
+            dbInitializer.Seed(app);
         }
     }
 }

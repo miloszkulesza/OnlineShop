@@ -13,6 +13,10 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" asp-action="Manage" asp-controller="Account" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Moje konto</a>
                 <a class="dropdown-item" asp-action="History" asp-controller="Order">Moje zamówienia</a>
+                @if(User.IsInRole("Administrator"))
+                {
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Admin">Panel administratora</a>
+                }
                 <input type="submit" class="dropdown-item" value="Wyloguj się" />
             </div>
         </div>

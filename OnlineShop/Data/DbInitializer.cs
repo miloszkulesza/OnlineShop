@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Models;
@@ -9,9 +10,16 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Data
 {
-    public static class DbInitializer
+    public class DbInitializer
     {
-        public static void Seed(IApplicationBuilder app)
+        private UserManager<AppUser> userManager;
+
+        public DbInitializer(UserManager<AppUser> userManager)
+        {
+            this.userManager = userManager;
+        }
+
+        public async void Seed(IApplicationBuilder app)
         {
             ApplicationDbContext context = app.ApplicationServices.GetRequiredService<ApplicationDbContext>();
             context.Database.Migrate();
@@ -31,7 +39,6 @@ namespace OnlineShop.Data
                         Name = "Tablety"
                     }
                 );
-                context.SaveChanges();
             }
             if (!context.Products.Any())
             {
@@ -147,6 +154,37 @@ namespace OnlineShop.Data
                         ImageName = "galaxy-tab-s6-1.jpg"
                     }
                 );
+            }
+            if (!context.Roles.Any())
+            {
+                context.Roles.AddRange(
+                    new IdentityRole
+                    {
+                        Name = "Administrator"
+                    },
+                    new IdentityRole
+                    {
+                        Name = "Użytkownik"
+                    }
+                );
+            }
+            if (!context.Users.Any(x => x.UserName.Equals("administrator@example.com")))
+            {
+                AppUser admin = new AppUser
+                {
+                    UserName = "administrator@example.com",
+                    FirstName = "Administrator",
+                    LastName = "Systemu",
+                    Email = "administrator@example.com"
+                };
+                var result = await userManager.CreateAsync(admin, "ZAQ!2wsx");
+            }
+            context.SaveChanges();
+            var adminAccount = context.Users.FirstOrDefault(x => x.UserName.Equals("administrator@example.com"));
+            var adminRole = context.Roles.FirstOrDefault(x => x.Name.Equals("Administrator"));
+            if (!context.UserRoles.Any(x => x.RoleId == adminRole.Id && x.UserId == adminAccount.Id))
+            {
+                context.UserRoles.Add(new IdentityUserRole<string> { RoleId = adminRole.Id, UserId = adminAccount.Id });
                 context.SaveChanges();
             }
         }
