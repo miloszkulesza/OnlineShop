@@ -22,13 +22,16 @@
         </div>
     </div>
 
-    <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
-        <img class="card-img-top img-thumbnail" src="@Url.IconPath("user-groups-icon.png")">
-        <div class="card-body">
-            <h5 class="card-title">Grupy</h5>
-            <a asp-action="Roles" class="btn btn-primary">Przejdź</a>
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
+            <img class="card-img-top img-thumbnail" src="@Url.IconPath("user-groups-icon.png")">
+            <div class="card-body">
+                <h5 class="card-title">Grupy</h5>
+                <a asp-action="Roles" class="btn btn-primary">Przejdź</a>
+            </div>
         </div>
-    </div>
+    }
 
     <div class="card" style="max-width: 20%; margin-right: 3%; margin-bottom: 3%;">
         <img class="card-img-top img-thumbnail" src="@Url.IconPath("users-icon.png")">
