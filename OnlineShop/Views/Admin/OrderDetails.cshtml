@@ -1,0 +1,58 @@
+﻿@model OrderDetailsViewModel
+@{
+    ViewData["Title"] = "Szczegóły zamówienia";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<div class="row">
+    <div class="col-xs-12">
+        <h2>Szczegóły zamówienia nr @Model.Order.OrderId</h2>
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>Ilość</th>
+                    <th>Wartość</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var orderPosition in Model.OrderPositions)
+                {
+                    <tr>
+                        <td><a asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@orderPosition.Product.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" class="nav-link">@orderPosition.Product.Name</a></td>
+                        <td>@orderPosition.Quantity</td>
+                        <td>@orderPosition.PurchasePrice.ToString("c")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <b>Łącznie: </b>@Model.Order.OrderValue.ToString("c")<br />
+        <div style="max-width: 400px;" class="text-justify">
+            <b>Uwagi do zamówienia: </b>
+            @if (Model.Order.Comment != null)
+            {
+                @Model.Order.Comment<br />
+                <b>Stan zamówienia:</b> @EnumHelpers.GetDisplayName(Model.Order.OrderStatus)
+
+                <br /><hr />
+            }
+            else
+            {
+                @:Brak<br />
+                <b>Stan zamówienia:</b> @Model.Order.OrderStatus<hr />
+            }
+        </div>
+        <h3>Dane do faktury:</h3>
+        @Model.Order.FirstName @Model.Order.LastName<br />
+        @Model.Order.Email<br />
+        @Model.Order.Street <br />
+        @Model.Order.PostalCode @Model.Order.City<br />
+        @Model.Order.PhoneNumber
+        <hr />
+    </div>
+</div>
+
+<a asp-action="Orders" class="btn btn-primary">Powrót</a>

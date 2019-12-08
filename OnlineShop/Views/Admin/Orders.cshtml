@@ -39,7 +39,7 @@
                     {
                         <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a><br />
                         <a class="btn btn-warning w-100" style="margin-bottom:5px;">Anuluj</a><br />
-                        <a class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
+                        <a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
                     }
                     else
                     {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
 using OnlineShop.Models;
 using OnlineShop.ViewModels;
@@ -20,6 +21,7 @@ namespace OnlineShop.Controllers
         private UserManager<AppUser> userManager;
         private IOrderRepository orderRepository;
         private IUserRolesRepository userRolesRepository;
+        private IOrderPositionRepository orderPositionRepository;
 
         public AdminController(
             IProductRepository productRepository,
@@ -27,7 +29,8 @@ namespace OnlineShop.Controllers
             RoleManager<IdentityRole> roleManager,
             UserManager<AppUser> userManager,
             IOrderRepository orderRepository,
-            IUserRolesRepository userRolesRepository)
+            IUserRolesRepository userRolesRepository,
+            IOrderPositionRepository orderPositionRepository)
         {
             this.productRepository = productRepository;
             this.categoryRepository = categoryRepository;
@@ -35,6 +38,7 @@ namespace OnlineShop.Controllers
             this.userManager = userManager;
             this.orderRepository = orderRepository;
             this.userRolesRepository = userRolesRepository;
+            this.orderPositionRepository = orderPositionRepository;
         }
 
         public IActionResult Index()
@@ -85,6 +89,16 @@ namespace OnlineShop.Controllers
         public IActionResult Orders()
         {
             return View(orderRepository.Orders.ToList());
+        }
+
+        public ActionResult OrderDetails(string id)
+        {
+            OrderDetailsViewModel vm = new OrderDetailsViewModel
+            {
+                Order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == id),
+                OrderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(x => x.OrderId == id).ToList()
+            };
+            return View(vm);
         }
     }
 }
