@@ -1,0 +1,35 @@
+﻿@model EditOrderProductViewModel
+@{
+    ViewData["Title"] = "Edytuj pozycję zamówienia";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        @using (Html.BeginForm("EditOrderProduct", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            @Html.HiddenFor(o => o.OrderId)
+            @Html.HiddenFor(o => o.OrderPositionId)
+            @Html.HiddenFor(o => o.ProductName)
+            <div class="form-group">
+                <label>Nazwa: </label>
+                @Model.ProductName
+            </div>
+            <div class="form-group">
+                <label>Ilość: </label>
+                @Html.TextBoxFor(o => o.Quantity, new { @class = "form-control", type = "number" })
+            </div>
+            <input type="submit" value="Zapisz" class="btn btn-success" />
+            <a class="btn btn-primary" asp-action="EditOrder" asp-route-id="@Model.OrderId">Powrót</a>
+        }
+    </div>
+</div>

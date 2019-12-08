@@ -17,9 +17,9 @@ namespace OnlineShop.Data
 
         public IQueryable<OrderPosition> OrderPositions => context.OrderPositions;
 
-        public void SaveOrderPosition(params OrderPosition[] orderPosition)
+        public void SaveOrderPosition(params OrderPosition[] orderPositions)
         {
-            foreach (var position in orderPosition)
+            foreach (var position in orderPositions)
             {
                 if (position.OrderPositionId == null)
                 {
@@ -37,6 +37,17 @@ namespace OnlineShop.Data
                 }
                 context.SaveChanges();
             }
+        }
+
+        public OrderPosition DeleteOrderPosition(OrderPosition orderPosition)
+        {
+            OrderPosition dbEntry = context.OrderPositions.FirstOrDefault(p => p.OrderPositionId == orderPosition.OrderPositionId);
+            if (dbEntry != null)
+            {
+                context.OrderPositions.Remove(dbEntry);
+                context.SaveChanges();
+            }
+            return dbEntry;
         }
     }
 }

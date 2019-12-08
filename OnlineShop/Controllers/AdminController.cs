@@ -88,7 +88,7 @@ namespace OnlineShop.Controllers
 
         public IActionResult Orders()
         {
-            return View(orderRepository.Orders.ToList());
+            return View(orderRepository.Orders.OrderByDescending(x => x.DateOfAddition).ToList());
         }
 
         public ActionResult OrderDetails(string id)
@@ -114,8 +114,124 @@ namespace OnlineShop.Controllers
             order.OrderStatus = OrderStatus.Anulowano;
             orderPositionRepository.SaveOrderPosition(orderPositions.ToArray());
             orderRepository.SaveOrder(order);
-            TempData["message"] = "Udało się anulować zamówienie";
+            TempData["SuccesMessage"] = "Udało się anulować zamówienie";
             return RedirectToAction("Orders");
+        }
+
+        public ActionResult EditOrder(string id)
+        {
+            OrderDetailsViewModel vm = new OrderDetailsViewModel
+            {
+                Order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == id),
+                OrderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(x => x.OrderId == id).ToList()
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        public ActionResult EditOrder(OrderDetailsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                orderRepository.SaveOrder(model.Order);
+                TempData["SuccesMessage"] = "Udało się zapisać zmiany";
+                return RedirectToAction("Orders");
+            }
+            TempData["ErrorMessage"] = "Nie udało się zapisać zmian";
+            return View(model);
+        }
+
+        public ActionResult EditOrderProduct(string id)
+        {
+            OrderPosition orderPosition = orderPositionRepository.OrderPositions.Include(x => x.Product).FirstOrDefault(o => o.OrderPositionId == id);
+            var model = new EditOrderProductViewModel()
+            {
+                OrderPositionId = id,
+                OrderId = orderPosition.OrderId,
+                ProductName = orderPosition.Product.Name,
+                Quantity = orderPosition.Quantity
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditOrderProduct(EditOrderProductViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (viewModel.Quantity > 0)
+                {
+                    var orderPosition = orderPositionRepository.OrderPositions.Include(x => x.Product).FirstOrDefault(x => x.OrderPositionId == viewModel.OrderPositionId);
+                    if (viewModel.Quantity <= 0)
+                    {
+                        orderPositionRepository.DeleteOrderPosition(orderPosition);
+                        TempData["SuccessMessage"] = "Udało się usunąć pozycję z zamówienia";
+                        return RedirectToAction("Orders");
+                    }
+                    var orderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(o => o.OrderId == viewModel.OrderId).ToList();
+                    var product = productRepository.Products.FirstOrDefault(o => o.Name == viewModel.ProductName);
+                    product.Quantity += orderPosition.Quantity;
+                    if (viewModel.Quantity > product.Quantity)
+                    {
+                        TempData["ErrorMessage"] = "Nie ma aż tyle tego produktu w magazynie!";
+                        return View(viewModel);
+                    }
+                    orderPosition.Quantity = viewModel.Quantity;
+                    product.Quantity -= viewModel.Quantity;
+                    productRepository.SaveProduct(product);
+                    orderPositionRepository.SaveOrderPosition(orderPosition);
+                    var order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == viewModel.OrderId);
+                    order.OrderValue = 0;
+                    foreach (var element in order.OrderPosition)
+                    {
+                        order.OrderValue += element.Quantity * element.PurchasePrice;
+                    }
+                    orderRepository.SaveOrder(order);
+                    TempData["SuccessMessage"] = "Udało się zapisać zmiany";
+                    return RedirectToAction("Orders");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ilość produktu w zamówieniu nie może być mniejsza od 0.";
+                    return View(viewModel);
+                }
+            }
+            return View(viewModel);
+        }
+
+        public ActionResult DeleteOrderPosition(string id)
+        {
+            var orderPosition = orderPositionRepository.OrderPositions.Include(x => x.Product).FirstOrDefault(x => x.OrderPositionId == id);
+            var product = productRepository.Products.FirstOrDefault(o => o.Name == orderPosition.Product.Name);
+            product.Quantity += orderPosition.Quantity;
+            productRepository.SaveProduct(product);
+            orderPositionRepository.DeleteOrderPosition(orderPosition);
+            var order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == orderPosition.OrderId);
+            var orderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(o => o.OrderId == orderPosition.OrderId).ToList();
+            if (orderPositions.Count() > 0)
+            {
+                order.OrderValue = 0;
+                foreach (var element in order.OrderPosition)
+                {
+                    order.OrderValue += element.Quantity * element.PurchasePrice;
+                }
+                if (order.OrderValue <= 0)
+                {
+                    order.OrderValue = 0;
+                    orderRepository.DeleteOrder(order);
+                }
+                else
+                {
+                    orderRepository.SaveOrder(order);
+                }
+            }
+            else
+            {
+                order.OrderStatus = OrderStatus.Anulowano;
+                orderRepository.SaveOrder(order);
+            }
+            TempData["SuccessMessage"] = "Udało sie zapisać zmiany";
+            return RedirectToAction("EditOrder", new { id = order.OrderId });
         }
     }
 }

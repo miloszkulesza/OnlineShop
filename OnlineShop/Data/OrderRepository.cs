@@ -51,5 +51,16 @@ namespace OnlineShop.Data
                 return dbEntry;
             }
         }
+
+        public Order DeleteOrder(Order order)
+        {
+            Order dbEntry = context.Orders.FirstOrDefault(p => p.OrderId == order.OrderId);
+            if (dbEntry != null)
+            {
+                context.Orders.Remove(dbEntry);
+                context.SaveChanges();
+            }
+            return dbEntry;
+        }
     }
 }

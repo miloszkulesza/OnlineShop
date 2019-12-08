@@ -6,6 +6,15 @@
 <h2>@ViewData["Title"]</h2>
 <hr />
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
+}
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -37,7 +46,7 @@
                 <td>
                     @if (order.OrderStatus == OrderStatus.Nowy || order.OrderStatus == OrderStatus.Przyjeto_do_realizacji || order.OrderStatus == OrderStatus.Wyslano_do_klienta)
                     {
-                        <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a><br />
+                        <a asp-action="EditOrder" asp-route-id="@order.OrderId" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a><br />
                         <a asp-action="CancelOrder" asp-route-id="@order.OrderId" class="btn btn-danger w-100" style="margin-bottom:5px;">Anuluj</a><br />
                         <a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
                     }

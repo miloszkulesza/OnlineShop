@@ -9,6 +9,7 @@ namespace OnlineShop.Data
     public interface IOrderPositionRepository
     {
         IQueryable<OrderPosition> OrderPositions { get; }
-        void SaveOrderPosition(params OrderPosition[] orderPosition);
+        void SaveOrderPosition(params OrderPosition[] orderPositions);
+        OrderPosition DeleteOrderPosition(OrderPosition orderPosition);
     }
 }

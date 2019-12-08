@@ -34,9 +34,9 @@ namespace OnlineShop.Data
             context.SaveChanges();
         }
 
-        public Category DeleteCategory(string categoryId)
+        public Category DeleteCategory(Category category)
         {
-            Category dbEntry = context.Categories.FirstOrDefault(c => c.Id == categoryId);
+            Category dbEntry = context.Categories.FirstOrDefault(c => c.Id == category.Id);
             if (dbEntry != null)
             {
                 context.Categories.Remove(dbEntry);

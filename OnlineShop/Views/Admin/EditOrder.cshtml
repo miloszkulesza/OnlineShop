@@ -1,0 +1,103 @@
+﻿@model OrderDetailsViewModel
+@{
+    ViewData["Title"] = "Edytuj zamówienie";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Zawartość zamówienia:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>Ilość</th>
+                    <th>Cena za szt</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var orderPosition in Model.OrderPositions)
+                {
+                    <tr>
+                        <td><a class="nav-link" asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@orderPosition.Product.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">@orderPosition.Product.Name</a></td>
+                        <td>@orderPosition.Quantity</td>
+                        <td>@orderPosition.PurchasePrice.ToString("c")</td>
+                        <td>
+                            <a asp-action="EditOrderProduct" asp-route-id="@orderPosition.OrderPositionId" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
+                            <a asp-action="DeleteOrderPosition" asp-route-id="@orderPosition.OrderPositionId" class="btn btn-danger w-100">Usuń</a>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td><b>Razem:</b></td>
+                    <td colspan="3" style="text-align:left;">@Model.Order.OrderValue.ToString("c")</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Dane do faktury:</h3>
+        @using (Html.BeginForm("EditOrder", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            @Html.HiddenFor(o => o.Order.OrderId)
+            @Html.HiddenFor(o => o.Order.DateOfAddition)
+            @Html.HiddenFor(o => o.Order.UserId)
+            @Html.HiddenFor(o => o.Order.OrderValue)
+            @Html.HiddenFor(o => o.OrderPositions)
+            <div class="form-group">
+                <label>Imię: </label>
+                @Html.TextBoxFor(o => o.Order.FirstName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.FirstName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Nazwisko: </label>
+                @Html.TextBoxFor(o => o.Order.LastName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.LastName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Email: </label>
+                @Html.TextBoxFor(o => o.Order.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.Email, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Adres: </label>
+                @Html.TextBoxFor(o => o.Order.Street, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.Street, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Kod pocztowy: </label>
+                @Html.TextBoxFor(o => o.Order.PostalCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.PostalCode, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Miasto: </label>
+                @Html.TextBoxFor(o => o.Order.City, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.City, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Telefon: </label>
+                @Html.TextBoxFor(o => o.Order.PhoneNumber, new { @class = "form-control" })
+                @Html.ValidationMessageFor(o => o.Order.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Stan zamówienia:</label>
+                <select asp-for="Order.OrderStatus" asp-items="Html.GetEnumSelectList(typeof(OrderStatus))" class="form-control"></select>
+            </div>
+            <input type="submit" value="Zapisz" class="btn btn-success" />
+        }
+        <hr />
+        @Html.ActionLink("Powrót", "Orders", "Admin", new { @class = "btn btn-primary" })
+    </div>
+</div>

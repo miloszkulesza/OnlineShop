@@ -10,5 +10,6 @@ namespace OnlineShop.Data
     {
         IQueryable<Order> Orders { get; }
         Order SaveOrder(Order order);
+        Order DeleteOrder(Order order);
     }
 }
