@@ -1,10 +1,37 @@
-﻿
+﻿@model IEnumerable<Product>
 @{
     ViewData["Title"] = "Produkty";
 }
 
 <h2>@ViewData["Title"]</h2>
 <hr />
+
+<table class="table table-striped table-responsive">
+    <thead>
+        <tr>
+            <th>Zdjęcie</th>
+            <th>Nazwa</th>
+            <th>Cena</th>
+            <th>Ilość</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var product in Model)
+        {
+            <tr>
+                <td scope="col"><img src="@Url.ImagePath(product.ImageName)" class="img-fluid img-thumbnail" style="width:100px;" /></td>
+                <td scope="col">@product.Name</td>
+                <td scope="col">@product.Price.ToString("c")</td>
+                <td scope="col">@product.Quantity</td>
+                <td scope="col">
+                    <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
+                    <a class="btn btn-danger w-100" style="margin-bottom:5px;">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <a asp-action="Index" class="btn btn-primary">Powrót</a>
 

@@ -3,13 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Data;
+using OnlineShop.Models;
+using OnlineShop.ViewModels;
 
 namespace OnlineShop.Controllers
 {
     [Authorize(Roles = "Administrator, Pracownik")]
     public class AdminController : Controller
     {
+        private IProductRepository productRepository;
+        private ICategoryRepository categoryRepository;
+        private RoleManager<IdentityRole> roleManager;
+        private UserManager<AppUser> userManager;
+        private IOrderRepository orderRepository;
+        private IUserRolesRepository userRolesRepository;
+
+        public AdminController(
+            IProductRepository productRepository,
+            ICategoryRepository categoryRepository,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<AppUser> userManager,
+            IOrderRepository orderRepository,
+            IUserRolesRepository userRolesRepository)
+        {
+            this.productRepository = productRepository;
+            this.categoryRepository = categoryRepository;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
+            this.orderRepository = orderRepository;
+            this.userRolesRepository = userRolesRepository;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -17,29 +44,47 @@ namespace OnlineShop.Controllers
 
         public IActionResult Products()
         {
-            return View();
+            return View(productRepository.Products.ToList());
         }
 
         public IActionResult Categories()
         {
-            return View();
+            CategoriesListViewModel vm = new CategoriesListViewModel
+            {
+                Categories = categoryRepository.Categories.ToList(),
+                ProductsInCategory = new Dictionary<string, int>()
+            };
+            foreach(var category in vm.Categories)
+            {
+                vm.ProductsInCategory.Add(category.Id, productRepository.Products.Where(x => x.Category.Id == category.Id).Count());
+            }
+            return View(vm);
         }
 
         [Authorize(Roles = "Administrator")]
         public IActionResult Roles()
-        { 
-            return View();
+        {
+            RolesListViewModel vm = new RolesListViewModel
+            {
+                Roles = roleManager.Roles.ToList(),
+                UsersInRole = new Dictionary<string, int>()
+            };
+            foreach(var role in vm.Roles)
+            {
+                vm.UsersInRole.Add(role.Id, userRolesRepository.UserRoles.Where(x => x.RoleId == role.Id).Count());
+            }
+            return View(vm);
         }
 
 
         public IActionResult Users()
         {
-            return View();
+            return View(userManager.Users.ToList());
         }
 
         public IActionResult Orders()
         {
-            return View();
+            return View(orderRepository.Orders.ToList());
         }
     }
 }

@@ -44,6 +44,7 @@ namespace OnlineShop
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderPositionRepository, OrderPositionRepository>();
+            services.AddTransient<IUserRolesRepository, UserRolesRepository>();
             services.AddSession();
             services.AddMemoryCache();
             services.AddScoped<Cart>(x => SessionCart.GetCart(x));

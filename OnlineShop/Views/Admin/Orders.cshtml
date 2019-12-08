@@ -1,9 +1,54 @@
-﻿
+﻿@model IEnumerable<Order>
 @{
     ViewData["Title"] = "Zamówienia";
 }
 
 <h2>@ViewData["Title"]</h2>
 <hr />
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nr zamówienia</th>
+            <th>Data</th>
+            <th>Stan</th>
+            <th>Dane wysyłkowe</th>
+            <th>Telefon</th>
+            <th>Uwagi</th>
+            <th>Łączny koszt</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.DateOfAddition</td>
+                <td>@EnumHelpers.GetDisplayName(order.OrderStatus)</td>
+                <td>
+                    @order.FirstName @order.LastName<br />
+                    @order.Street <br />
+                    @order.PostalCode @order.City<br />
+                </td>
+                <td>@order.PhoneNumber</td>
+                <td style="max-width: 200px;">@order.Comment</td>
+                <td>@order.OrderValue.ToString("c")</td>
+                <td>
+                    @if (order.OrderStatus == OrderStatus.Nowy || order.OrderStatus == OrderStatus.Przyjeto_do_realizacji || order.OrderStatus == OrderStatus.Wyslano_do_klienta)
+                    {
+                        <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a><br />
+                        <a class="btn btn-warning w-100" style="margin-bottom:5px;">Anuluj</a><br />
+                        <a class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-info w-100">Szczegóły</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <a asp-action="Index" class="btn btn-primary">Powrót</a>
