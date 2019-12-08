@@ -12,7 +12,7 @@ namespace OnlineShop.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", new { controller = "Catalog" });
         }
 
         public IActionResult About()
