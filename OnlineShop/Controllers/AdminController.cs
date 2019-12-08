@@ -254,5 +254,33 @@ namespace OnlineShop.Controllers
             TempData["ErrorMessage"] = "Kategoria nie istnieje";
             return RedirectToAction("Categories");
         }
+
+        public IActionResult HideProduct(string id)
+        {
+            var product = productRepository.Products.FirstOrDefault(x => x.Id == id);
+            if(product != null)
+            {
+                product.IsHidden = true;
+                productRepository.SaveProduct(product);
+                TempData["SuccessMessage"] = "Ukryto produkt";
+                return RedirectToAction("Products");
+            }
+            TempData["ErrorMessage"] = "Produkt nie istnieje";
+            return RedirectToAction("Products");
+        }
+
+        public IActionResult ShowProduct(string id)
+        {
+            var product = productRepository.Products.FirstOrDefault(x => x.Id == id);
+            if (product != null)
+            {
+                product.IsHidden = false;
+                productRepository.SaveProduct(product);
+                TempData["SuccessMessage"] = "Pokazano produkt";
+                return RedirectToAction("Products");
+            }
+            TempData["ErrorMessage"] = "Produkt nie istnieje";
+            return RedirectToAction("Products");
+        }
     }
 }

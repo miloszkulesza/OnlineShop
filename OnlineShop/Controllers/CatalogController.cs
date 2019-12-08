@@ -30,7 +30,7 @@ namespace OnlineShop.Controllers
             {
                 productsViewModel = new ProductsListViewModel
                 {
-                    Products = productRepository.Products.OrderBy(p => p.DateOfAddition).Skip((productPage - 1) * PageSize).Take(PageSize),
+                    Products = productRepository.Products.Where(x => x.Quantity > 0 && !x.IsHidden).OrderBy(p => p.DateOfAddition).Skip((productPage - 1) * PageSize).Take(PageSize),
                     PagingInfo = new PagingInfo
                     {
                         CurrentPage = productPage,
@@ -42,7 +42,7 @@ namespace OnlineShop.Controllers
             }
             productsViewModel = new ProductsListViewModel
             {
-                Products = productRepository.Products.Where(x => x.Category.Id == categoryId).OrderBy(p => p.DateOfAddition).Skip((productPage - 1) * PageSize).Take(PageSize),
+                Products = productRepository.Products.Where(x => x.Category.Id == categoryId && x.Quantity > 0 && !x.IsHidden).OrderBy(p => p.DateOfAddition).Skip((productPage - 1) * PageSize).Take(PageSize),
                 Category = categoryRepository.Categories.FirstOrDefault(c => c.Id == categoryId),
                 PagingInfo = new PagingInfo
                 {
