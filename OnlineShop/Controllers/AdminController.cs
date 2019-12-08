@@ -91,7 +91,7 @@ namespace OnlineShop.Controllers
             return View(orderRepository.Orders.OrderByDescending(x => x.DateOfAddition).ToList());
         }
 
-        public ActionResult OrderDetails(string id)
+        public IActionResult OrderDetails(string id)
         {
             OrderDetailsViewModel vm = new OrderDetailsViewModel
             {
@@ -101,7 +101,7 @@ namespace OnlineShop.Controllers
             return View(vm);
         }
 
-        public ActionResult CancelOrder(string id)
+        public IActionResult CancelOrder(string id)
         {
             var order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == id);
             var orderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(x => x.OrderId == id).ToList();
@@ -118,7 +118,7 @@ namespace OnlineShop.Controllers
             return RedirectToAction("Orders");
         }
 
-        public ActionResult EditOrder(string id)
+        public IActionResult EditOrder(string id)
         {
             OrderDetailsViewModel vm = new OrderDetailsViewModel
             {
@@ -129,7 +129,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditOrder(OrderDetailsViewModel model)
+        public IActionResult EditOrder(OrderDetailsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -141,7 +141,7 @@ namespace OnlineShop.Controllers
             return View(model);
         }
 
-        public ActionResult EditOrderProduct(string id)
+        public IActionResult EditOrderProduct(string id)
         {
             OrderPosition orderPosition = orderPositionRepository.OrderPositions.Include(x => x.Product).FirstOrDefault(o => o.OrderPositionId == id);
             var model = new EditOrderProductViewModel()
@@ -155,7 +155,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditOrderProduct(EditOrderProductViewModel viewModel)
+        public IActionResult EditOrderProduct(EditOrderProductViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -199,7 +199,7 @@ namespace OnlineShop.Controllers
             return View(viewModel);
         }
 
-        public ActionResult DeleteOrderPosition(string id)
+        public IActionResult DeleteOrderPosition(string id)
         {
             var orderPosition = orderPositionRepository.OrderPositions.Include(x => x.Product).FirstOrDefault(x => x.OrderPositionId == id);
             var product = productRepository.Products.FirstOrDefault(o => o.Name == orderPosition.Product.Name);
@@ -235,6 +235,24 @@ namespace OnlineShop.Controllers
             }
             TempData["SuccessMessage"] = "Udało sie zapisać zmiany";
             return RedirectToAction("EditOrder", new { id = order.OrderId });
+        }
+
+        public IActionResult DeleteCategory(string id)
+        {
+            var category = categoryRepository.Categories.FirstOrDefault(x => x.Id == id);
+            if(category != null)
+            {
+                if(productRepository.Products.Include(x => x.Category).Where(x => x.Category.Id == category.Id).Count() > 0)
+                {
+                    TempData["ErrorMessage"] = "Nie można usunąć kategorii w której są produkty";
+                    return RedirectToAction("Categories");
+                }
+                categoryRepository.DeleteCategory(category);
+                TempData["SuccessMessage"] = "Udało się usunąć kategorię";
+                return RedirectToAction("Categories");
+            }
+            TempData["ErrorMessage"] = "Kategoria nie istnieje";
+            return RedirectToAction("Categories");
         }
     }
 }

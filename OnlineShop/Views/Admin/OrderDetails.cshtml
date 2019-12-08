@@ -42,7 +42,7 @@
             else
             {
                 @:Brak<br />
-                <b>Stan zamówienia:</b> @Model.Order.OrderStatus<hr />
+                <b>Stan zamówienia:</b>  @EnumHelpers.GetDisplayName(Model.Order.OrderStatus)<hr />
             }
         </div>
         <h3>Dane do faktury:</h3>
