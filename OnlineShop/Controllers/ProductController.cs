@@ -17,7 +17,7 @@ namespace OnlineShop.Controllers
             this.productRepository = productRepository;
         }
 
-        public IActionResult Index() => View(productRepository.Products.ToList());
+        public IActionResult Index() => View(productRepository.Products.Where(x => x.Quantity > 0 && !x.IsHidden).ToList());
 
         public IActionResult ProductDetails(string productId, string returnUrl) => View(new ProductDetailsViewModel { Product = productRepository.Products.FirstOrDefault(x => x.Id == productId), ReturnUrl = returnUrl });
     }

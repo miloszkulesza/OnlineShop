@@ -96,8 +96,7 @@
                 <select asp-for="Order.OrderStatus" asp-items="Html.GetEnumSelectList(typeof(OrderStatus))" class="form-control"></select>
             </div>
             <input type="submit" value="Zapisz" class="btn btn-success" />
+            <a asp-action="Index" class="btn btn-primary">Powrót</a>
         }
-        <hr />
-        @Html.ActionLink("Powrót", "Orders", "Admin", new { @class = "btn btn-primary" })
     </div>
 </div>

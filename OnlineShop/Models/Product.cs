@@ -17,5 +17,6 @@ namespace OnlineShop.Models
         public string ImageName { get; set; }
         public DateTime DateOfAddition { get; set; }
         public Category Category { get; set; }
+        public bool IsHidden { get; set; } = false;
     }
 }

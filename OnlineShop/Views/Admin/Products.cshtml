@@ -13,6 +13,7 @@
             <th>Nazwa</th>
             <th>Cena</th>
             <th>Ilość</th>
+            <th>Ukryty</th>
             <th>Akcje</th>
         </tr>
     </thead>
@@ -24,6 +25,14 @@
                 <td scope="col">@product.Name</td>
                 <td scope="col">@product.Price.ToString("c")</td>
                 <td scope="col">@product.Quantity</td>
+                @if(product.IsHidden)
+                {
+                    <td>Tak</td>
+                }
+                else
+                {
+                    <td>Nie</td>
+                }
                 <td scope="col">
                     <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
                     <a class="btn btn-danger w-100" style="margin-bottom:5px;">Usuń</a>

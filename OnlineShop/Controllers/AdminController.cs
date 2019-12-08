@@ -227,8 +227,11 @@ namespace OnlineShop.Controllers
             }
             else
             {
+                order.OrderValue = 0;
                 order.OrderStatus = OrderStatus.Anulowano;
                 orderRepository.SaveOrder(order);
+                TempData["SuccessMessage"] = "Anulowano zamówienie";
+                return RedirectToAction("Orders");
             }
             TempData["SuccessMessage"] = "Udało sie zapisać zmiany";
             return RedirectToAction("EditOrder", new { id = order.OrderId });
