@@ -100,5 +100,22 @@ namespace OnlineShop.Controllers
             };
             return View(vm);
         }
+
+        public ActionResult CancelOrder(string id)
+        {
+            var order = orderRepository.Orders.FirstOrDefault(x => x.OrderId == id);
+            var orderPositions = orderPositionRepository.OrderPositions.Include(x => x.Product).Where(x => x.OrderId == id).ToList();
+            foreach (var orderPosition in orderPositions)
+            {
+                var product = productRepository.Products.FirstOrDefault(x => x.Name == orderPosition.Product.Name);
+                product.Quantity += orderPosition.Quantity;
+                productRepository.SaveProduct(product);
+            }
+            order.OrderStatus = OrderStatus.Anulowano;
+            orderPositionRepository.SaveOrderPosition(orderPositions.ToArray());
+            orderRepository.SaveOrder(order);
+            TempData["message"] = "Udało się anulować zamówienie";
+            return RedirectToAction("Orders");
+        }
     }
 }
