@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.IO;
 
 namespace OnlineShop.Infrastructure
@@ -21,5 +22,12 @@ namespace OnlineShop.Infrastructure
         }
 
         public static string PathAndQuery(this HttpRequest request) => request.QueryString.HasValue ? $"{request.Path}{request.QueryString}" : request.Path.ToString();
+
+        public static string SaveProductImagePath(this IUrlHelper helper, string fileName)
+        {
+            var path = Path.Combine("\\wwwroot\\images\\products", fileName);
+            var absolutePath = helper.Content(path);
+            return absolutePath;
+        }
     }
 }

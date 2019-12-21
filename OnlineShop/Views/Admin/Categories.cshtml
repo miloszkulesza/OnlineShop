@@ -15,7 +15,11 @@
     <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
 }
 
-<a class="btn btn-success">Dodaj</a>
+<div style="margin-bottom: 10px;">
+    <a asp-action="AddCategory" class="btn btn-success">Dodaj nową</a>
+    <a asp-action="Index" class="btn btn-primary">Powrót</a>
+</div>
+
 <table class="table table-striped table-responsive">
     <thead>
         <tr>
@@ -38,5 +42,3 @@
         }
     </tbody>
 </table>
-
-<a asp-action="Index" class="btn btn-primary">Powrót</a>

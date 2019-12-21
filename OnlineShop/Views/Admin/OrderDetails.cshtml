@@ -6,6 +6,8 @@
 <h2>@ViewData["Title"]</h2>
 <hr />
 
+<a asp-action="Orders" class="btn btn-primary">Powrót</a>
+
 <div class="row">
     <div class="col-xs-12">
         <h2>Szczegóły zamówienia nr @Model.Order.OrderId</h2>
@@ -42,7 +44,7 @@
             else
             {
                 @:Brak<br />
-                <b>Stan zamówienia:</b>  @EnumHelpers.GetDisplayName(Model.Order.OrderStatus)<hr />
+                <b>Stan zamówienia:</b> @EnumHelpers.GetDisplayName(Model.Order.OrderStatus)<hr />
             }
         </div>
         <h3>Dane do faktury:</h3>
@@ -54,5 +56,3 @@
         <hr />
     </div>
 </div>
-
-<a asp-action="Orders" class="btn btn-primary">Powrót</a>

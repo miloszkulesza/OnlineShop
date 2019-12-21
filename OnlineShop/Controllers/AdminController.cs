@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
+using OnlineShop.Infrastructure;
 using OnlineShop.Models;
 using OnlineShop.ViewModels;
 
@@ -48,7 +51,8 @@ namespace OnlineShop.Controllers
 
         public IActionResult Products()
         {
-            return View(productRepository.Products.ToList());
+            var products = productRepository.Products.ToList();
+            return View(products);
         }
 
         public IActionResult Categories()
@@ -281,6 +285,69 @@ namespace OnlineShop.Controllers
             }
             TempData["ErrorMessage"] = "Produkt nie istnieje";
             return RedirectToAction("Products");
+        }
+
+        public IActionResult AddProduct()
+        {
+            var categories = categoryRepository.Categories.ToList();
+            EditProductViewModel vm = new EditProductViewModel();
+            vm.Categories = new List<SelectListItem>();
+            vm.Categories.Add(new SelectListItem("Wybierz kategorię", "none", true));
+            foreach(var category in categories)
+            {
+                vm.Categories.Add(new SelectListItem(category.Name, category.Id));
+            }
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async System.Threading.Tasks.Task<IActionResult> AddProduct(EditProductViewModel model)
+        {
+            var categories = categoryRepository.Categories.ToList();
+            model.Categories = new List<SelectListItem>();
+            model.Categories.Add(new SelectListItem("Wybierz kategorię", "none", true));
+            foreach (var category in categories)
+            {
+                model.Categories.Add(new SelectListItem(category.Name, category.Id));
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            if(model.Quantity < 0)
+            {
+                ModelState.AddModelError("", "Ilość produktu nie może być mniejsza od 0");
+                return View(model);
+            }
+            if (model.Price < 0)
+            {
+                ModelState.AddModelError("", "Cena produktu nie może być mniejsza od 0");
+                return View(model);
+            }
+            Product newProduct = new Product
+            {
+                Category = categoryRepository.Categories.FirstOrDefault(x => x.Id == model.SelectedCategory),
+                DateOfAddition = DateTime.Now,
+                Description = model.Description,
+                IsHidden = model.IsHidden,
+                Name = model.Name,
+                Price = model.Price,
+                Quantity = model.Quantity,
+                ImageName = model.ProductImage.FileName
+            };
+            var path = $"{Environment.CurrentDirectory}{Url.SaveProductImagePath(model.ProductImage.FileName)}";
+            using (var stream = new FileStream(path, FileMode.OpenOrCreate))
+            {
+                await model.ProductImage.CopyToAsync(stream);
+            }
+            productRepository.SaveProduct(newProduct);
+            TempData["SuccessMessage"] = "Dodano nowy produkt";
+            return RedirectToAction("Products");
+        }
+
+        public IActionResult AddCategory(string id)
+        {
+            return View();
         }
     }
 }
