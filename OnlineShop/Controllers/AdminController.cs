@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -287,15 +289,32 @@ namespace OnlineShop.Controllers
             return RedirectToAction("Products");
         }
 
-        public IActionResult AddProduct()
+        public IActionResult AddProduct(string id)
         {
-            var categories = categoryRepository.Categories.ToList();
             EditProductViewModel vm = new EditProductViewModel();
+            var categories = categoryRepository.Categories.ToList();
             vm.Categories = new List<SelectListItem>();
             vm.Categories.Add(new SelectListItem("Wybierz kategorię", "none", true));
-            foreach(var category in categories)
+            foreach (var category in categories)
             {
                 vm.Categories.Add(new SelectListItem(category.Name, category.Id));
+            }
+            if (id != null)
+            {
+                var product = productRepository.Products.Include(x => x.Category).FirstOrDefault(x => x.Id == id);
+                vm.SelectedCategory = product.Category.Name;
+                vm.Categories.FirstOrDefault(x => x.Value == product.Category.Id).Selected = true;
+                vm.Categories.FirstOrDefault(x => x.Value == "none").Selected = false;
+                vm.IsHidden = product.IsHidden;
+                vm.Id = product.Id;
+                vm.Name = product.Name;
+                vm.Price = product.Price;
+                vm.Quantity = product.Quantity;
+                vm.DateOfAddition = product.DateOfAddition;
+                vm.Description = product.Description;
+                var path = $"{Environment.CurrentDirectory}{Url.SaveProductImagePath(product.ImageName)}";
+                var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                vm.ProductImage = new FormFile(fs, 0, fs.Length, product.ImageName, fs.Name);
             }
             return View(vm);
         }

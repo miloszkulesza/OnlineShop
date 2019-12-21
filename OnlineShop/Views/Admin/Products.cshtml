@@ -48,7 +48,7 @@
                     <td>Nie</td>
                 }
                 <td scope="col">
-                    <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
+                    <a asp-action="AddProduct" asp-route-id="@product.Id" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
                     @if (!product.IsHidden)
                     {
                         <a asp-action="HideProduct" asp-route-id="@product.Id" class="btn btn-danger w-100" style="margin-bottom:5px;">Ukryj</a>
