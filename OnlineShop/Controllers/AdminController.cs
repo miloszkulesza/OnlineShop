@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
@@ -294,7 +294,7 @@ namespace OnlineShop.Controllers
             EditProductViewModel vm = new EditProductViewModel();
             var categories = categoryRepository.Categories.ToList();
             vm.Categories = new List<SelectListItem>();
-            vm.Categories.Add(new SelectListItem("Wybierz kategorię", "none", true));
+            vm.Categories.Add(new SelectListItem("Wybierz kategorię", "none", false));
             foreach (var category in categories)
             {
                 vm.Categories.Add(new SelectListItem(category.Name, category.Id));
@@ -302,9 +302,8 @@ namespace OnlineShop.Controllers
             if (id != null)
             {
                 var product = productRepository.Products.Include(x => x.Category).FirstOrDefault(x => x.Id == id);
-                vm.SelectedCategory = product.Category.Name;
+                vm.SelectedCategory = product.Category.Id;
                 vm.Categories.FirstOrDefault(x => x.Value == product.Category.Id).Selected = true;
-                vm.Categories.FirstOrDefault(x => x.Value == "none").Selected = false;
                 vm.IsHidden = product.IsHidden;
                 vm.Id = product.Id;
                 vm.Name = product.Name;
@@ -312,15 +311,12 @@ namespace OnlineShop.Controllers
                 vm.Quantity = product.Quantity;
                 vm.DateOfAddition = product.DateOfAddition;
                 vm.Description = product.Description;
-                var path = $"{Environment.CurrentDirectory}{Url.SaveProductImagePath(product.ImageName)}";
-                var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                vm.ProductImage = new FormFile(fs, 0, fs.Length, product.ImageName, fs.Name);
             }
             return View(vm);
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> AddProduct(EditProductViewModel model)
+        public async Task<IActionResult> AddProduct(EditProductViewModel model)
         {
             var categories = categoryRepository.Categories.ToList();
             model.Categories = new List<SelectListItem>();
@@ -352,13 +348,24 @@ namespace OnlineShop.Controllers
                 Name = model.Name,
                 Price = model.Price,
                 Quantity = model.Quantity,
-                ImageName = model.ProductImage.FileName
             };
-            var path = $"{Environment.CurrentDirectory}{Url.SaveProductImagePath(model.ProductImage.FileName)}";
-            using (var stream = new FileStream(path, FileMode.OpenOrCreate))
+            if(model.Id != null)
             {
-                await model.ProductImage.CopyToAsync(stream);
+                newProduct.Id = model.Id;
             }
+            if(model.ProductImage == null)
+            {
+                newProduct.ImageName = productRepository.Products.FirstOrDefault(x => x.Id == model.Id).ImageName;
+            }
+            else
+            {
+                var path = $"{Environment.CurrentDirectory}{Url.SaveProductImagePath(model.ProductImage.FileName)}";
+                using (var stream = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    await model.ProductImage.CopyToAsync(stream);
+                }
+                newProduct.ImageName = model.ProductImage.FileName;
+            }    
             productRepository.SaveProduct(newProduct);
             TempData["SuccessMessage"] = "Dodano nowy produkt";
             return RedirectToAction("Products");

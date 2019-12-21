@@ -9,6 +9,7 @@
 <form method="post" enctype="multipart/form-data">
     <div class="text-danger" asp-validation-summary="All"></div>
     <input type="hidden" asp-for="@Model.Id" />
+    <input type="hidden" asp-for="@Model.Categories" />
     <div class="form-group">
         <label>Nazwa:</label>
         <input type="text" asp-for="@Model.Name" class="form-control" />

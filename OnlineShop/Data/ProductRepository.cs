@@ -32,6 +32,11 @@ namespace OnlineShop.Data
                     dbEntry.Description = product.Description;
                     dbEntry.Price = product.Price;
                     dbEntry.Category = product.Category;
+                    dbEntry.Quantity = product.Quantity;
+                    dbEntry.DateOfAddition = product.DateOfAddition;
+                    dbEntry.Id = product.Id;
+                    dbEntry.ImageName = product.ImageName;
+                    dbEntry.IsHidden = product.IsHidden;
                 }
             }
             context.SaveChanges();

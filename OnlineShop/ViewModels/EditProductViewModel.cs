@@ -17,7 +17,6 @@ namespace OnlineShop.ViewModels
         public decimal Price { get; set; }
         [Required(ErrorMessage = "Podaj ilość")]
         public int Quantity { get; set; }
-        [Required(ErrorMessage = "Wstaw zdjęcie produktu")]
         public IFormFile ProductImage { get; set; }
         public DateTime DateOfAddition { get; set; }
         public List<SelectListItem> Categories { get; set; }
