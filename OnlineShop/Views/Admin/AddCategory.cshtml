@@ -1,0 +1,18 @@
+﻿@model EditCategoryViewModel
+@{
+    ViewData["Title"] = "Dodaj kategorię";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<form method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <input type="hidden" asp-for="@Model.Id" />
+    <div class="form-group">
+        <label>Nazwa:</label>
+        <input type="text" asp-for="@Model.Name" class="form-control" />
+    </div>
+    <input type="submit" class="btn btn-success" value="Zapisz" />
+    <a asp-action="Categories" class="btn btn-primary">Powrót</a>
+</form>

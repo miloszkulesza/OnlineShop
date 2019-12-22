@@ -373,7 +373,39 @@ namespace OnlineShop.Controllers
 
         public IActionResult AddCategory(string id)
         {
-            return View();
+            EditCategoryViewModel vm = new EditCategoryViewModel();
+            if(id != null)
+            {
+                var category = categoryRepository.Categories.FirstOrDefault(x => x.Id == id);
+                vm.Id = category.Id;
+                vm.Name = category.Name;
+            }
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult AddCategory(EditCategoryViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                Category category;
+                if(model.Id != null)
+                {
+                    category = categoryRepository.Categories.FirstOrDefault(x => x.Id == model.Id);
+                    category.Name = model.Name;
+                }
+                else
+                {
+                    category = new Category
+                    {
+                        Name = model.Name
+                    };
+                }
+                categoryRepository.SaveCategory(category);
+                TempData["SuccessMessage"] = "Zapisano kategorię";
+                return RedirectToAction("Categories");
+            }
+            return View(model);
         }
     }
 }

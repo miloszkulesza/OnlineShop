@@ -35,7 +35,7 @@
                 <td scope="col">@category.Name</td>
                 <td scope="col">@Model.ProductsInCategory[category.Id]</td>
                 <td scope="col">
-                    <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
+                    <a asp-action="AddCategory" asp-route-id="@category.Id" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
                     <a asp-action="DeleteCategory" asp-route-id="@category.Id" class="btn btn-danger w-100" style="margin-bottom:5px;">Usuń</a>
                 </td>
             </tr>
