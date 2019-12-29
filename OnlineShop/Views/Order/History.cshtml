@@ -4,46 +4,51 @@
     ViewData["Title"] = "Historia zmówień";
 }
 
-<div class="row">
-    <h2>@ViewData["Title"]</h2>
-    <hr />
-    @if (Model.Any())
-    {
-        <table class="table">
-            <thead>
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nr zamówienia</th>
+                <th>Data</th>
+                <th>Stan</th>
+                <th>Dane wysyłkowe</th>
+                <th>Telefon</th>
+                <th>Łączny koszt</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
                 <tr>
-                    <th>Nr zamówienia</th>
-                    <th>Data</th>
-                    <th>Stan</th>
-                    <th>Dane wysyłkowe</th>
-                    <th>Telefon</th>
-                    <th>Łączny koszt</th>
-                    <th>Akcje</th>
+                    <td>@order.OrderId</td>
+                    <td>@order.DateOfAddition.ToString("dd-MM-yyyy")</td>
+                    <td>@EnumHelpers.GetDisplayName(order.OrderStatus)</td>
+                    <td>
+                        @order.FirstName @order.LastName<br />
+                        @order.Street @order.BuildingNumber
+                        @if (order.ApartmentNumber != null)
+                        {
+                            @:lok. @order.ApartmentNumber
+                        }
+                        <br />
+                        @order.PostalCode @order.City
+                    </td>
+                    <td>@order.PhoneNumber</td>
+                    <td>@order.OrderValue.ToString("c")</td>
+                    <td><a class="btn btn-primary" asp-action="OrderDetails" asp-controller="Order" asp-route-orderId="@order.OrderId">Szczegóły</a></td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach(var order in Model)
-                {
-                    <tr>
-                        <td>@order.OrderId</td>
-                        <td>@order.DateOfAddition.ToString("dd-MM-yyyy")</td>
-                        <td>@EnumHelpers.GetDisplayName(order.OrderStatus)</td>
-                        <td>
-                            @order.FirstName @order.LastName<br />
-                            @order.Street @order.BuildingNumber 
-                            @if (order.ApartmentNumber != null)
-                            {
-                                @:lok. @order.ApartmentNumber
-                            }
-                            <br />
-                            @order.PostalCode @order.City
-                        </td>
-                        <td>@order.PhoneNumber</td>
-                        <td>@order.OrderValue.ToString("c")</td>
-                        <td><a class="btn btn-primary" asp-action="OrderDetails" asp-controller="Order" asp-route-orderId="@order.OrderId">Szczegóły</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</div>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-danger text-center">
+        Brak zamówień
+    </div>
+}

@@ -19,47 +19,57 @@
     <a asp-action="Index" class="btn btn-primary">Powrót</a>
 </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nr zamówienia</th>
-            <th>Data</th>
-            <th>Dane wysyłkowe</th>
-            <th>Telefon</th>
-            <th>Uwagi</th>
-            <th>Łączny koszt</th>
-            <th>Stan</th>
-            <th>Akcje</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-        {
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-danger text-center">
+        Brak zamówień
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>@order.OrderId</td>
-                <td>@order.DateOfAddition</td>
-                <td>
-                    @order.FirstName @order.LastName<br />
-                    @order.Street <br />
-                    @order.PostalCode @order.City<br />
-                </td>
-                <td>@order.PhoneNumber</td>
-                <td style="max-width: 200px;">@order.Comment</td>
-                <td>@order.OrderValue.ToString("c")</td>
-                <td>@EnumHelpers.GetDisplayName(order.OrderStatus)</td>
-                <td>
-                    @if (order.OrderStatus == OrderStatus.Nowy || order.OrderStatus == OrderStatus.Przyjeto_do_realizacji || order.OrderStatus == OrderStatus.Wyslano_do_klienta)
-                    {
-                        <a asp-action="EditOrder" asp-route-id="@order.OrderId" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a><br />
-                        <a asp-action="CancelOrder" asp-route-id="@order.OrderId" class="btn btn-danger w-100" style="margin-bottom:5px;">Anuluj</a><br />
-                        <a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
-                    }
-                    else
-                    {
-                        <a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
-                    }
-                </td>
+                <th>Nr zamówienia</th>
+                <th>Data</th>
+                <th>Dane wysyłkowe</th>
+                <th>Telefon</th>
+                <th>Uwagi</th>
+                <th>Łączny koszt</th>
+                <th>Stan</th>
+                <th>Akcje</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.DateOfAddition</td>
+                    <td>
+                        @order.FirstName @order.LastName<br />
+                        @order.Street <br />
+                        @order.PostalCode @order.City<br />
+                    </td>
+                    <td>@order.PhoneNumber</td>
+                    <td style="max-width: 200px;">@order.Comment</td>
+                    <td>@order.OrderValue.ToString("c")</td>
+                    <td>@EnumHelpers.GetDisplayName(order.OrderStatus)</td>
+                    <td>
+                        @if (order.OrderStatus == OrderStatus.Nowy || order.OrderStatus == OrderStatus.Przyjeto_do_realizacji || order.OrderStatus == OrderStatus.Wyslano_do_klienta)
+                        {
+                            <a asp-action="EditOrder" asp-route-id="@order.OrderId" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a><br />
+                            <a asp-action="CancelOrder" asp-route-id="@order.OrderId" class="btn btn-danger w-100" style="margin-bottom:5px;">Anuluj</a><br />
+                            <a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
+                        }
+                        else
+                        {
+                            <a asp-action="OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info w-100" style="margin-bottom:5px;">Szczegóły</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

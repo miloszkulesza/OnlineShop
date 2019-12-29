@@ -40,6 +40,7 @@ namespace OnlineShop.Data
                     }
                 );
             }
+            context.SaveChanges();
             if (!context.Products.Any())
             {
                 context.Products.AddRange(
@@ -51,7 +52,8 @@ namespace OnlineShop.Data
                         Description = "Bezramkowe doświadczenie w pełnej krasie! Xiaomi Mi 9T, europejski odpowiednik niezwykle udanego Redmi K20, to prawdziwie immersyjne doznanie podyktowane dużym, pozbawionym notcha ekranem AMOLED oraz wysuwanym aparatem do selfie! Ścisła współpraca szybkiego procesora Snapdragon 730 oraz 6GB pamięci RAM zapewni odpowiednią moc wymaganą do najtrudniejszych zadań, a duża bateria 4000mAh wyniesie komfort użytkowania na zupełnie nowy poziom.",
                         Price = 1599,
                         DateOfAddition = DateTime.Now,
-                        ImageName = "mi-9t-1.jpg"
+                        ImageName = "mi-9t-1.jpg",
+                        
                     },
                     new Product
                     {
