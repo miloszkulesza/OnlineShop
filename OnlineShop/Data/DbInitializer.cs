@@ -160,15 +160,18 @@ namespace OnlineShop.Data
                 context.Roles.AddRange(
                     new IdentityRole
                     {
-                        Name = "Administrator"
+                        Name = "Administrator",
+                        NormalizedName = "Administrator"
                     },
                     new IdentityRole
                     {
-                        Name = "Użytkownik"
+                        Name = "Użytkownik",
+                        NormalizedName = "Użytkownik"
                     },
                     new IdentityRole
                     {
-                        Name = "Pracownik"
+                        Name = "Pracownik",
+                        NormalizedName = "Pracownik"
                     }
                 );
             }

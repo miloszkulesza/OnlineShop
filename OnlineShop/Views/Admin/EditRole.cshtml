@@ -1,0 +1,59 @@
+﻿@model RoleEditViewModel
+@{
+    ViewData["Title"] = "Edytuj grupę";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="EditRole" method="post">
+    <input type="hidden" name="roleName" value="@Model.Role.Name" />
+    <input type="hidden" name="roleId" value="@Model.Role.Id" />
+    <h6>Dodaj do roli @Model.Role.Name</h6>
+    <table class="table table-striped">
+        @if (Model.NonMembers.Count() == 0)
+        {
+            <tr>
+                <td colspan="2">Wszyscy użytkownicy w tej roli.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var user in Model.NonMembers)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="IdsToAdd" value="@user.Id" />
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
+    <h6>Usuń z roli @Model.Role.Name</h6>
+    <table class="table table-striped">
+        @if (Model.Members.Count() == 0)
+        {
+            <tr>
+                <td colspan="2">Brak użytkownikow w tej roli.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var user in Model.Members)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="IdsToDelete" value="@user.Id" />
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <button type="submit" class="btn btn-success">Zapisz</button>
+    <a asp-action="Roles" class="btn btn-primary">Powrót</a>
+</form>

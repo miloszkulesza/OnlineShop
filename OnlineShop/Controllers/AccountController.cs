@@ -16,14 +16,17 @@ namespace OnlineShop.Controllers
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
         private IPasswordHasher<AppUser> passwordHasher;
+        private RoleManager<IdentityRole> roleManager;
 
         public AccountController(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            IPasswordHasher<AppUser> passwordHasher)
+            IPasswordHasher<AppUser> passwordHasher,
+            RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.passwordHasher = passwordHasher;
+            this.roleManager = roleManager;
         }
 
         [AllowAnonymous]
@@ -92,6 +95,9 @@ namespace OnlineShop.Controllers
                 var user = new AppUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, ApartmentNumber = model.ApartmentNumber,
                     BuildingNumber = model.BuildingNumber, City = model.City, PhoneNumber = model.PhoneNumber, Street = model.Street, ZipCode = model.ZipCode };
                 var result = await userManager.CreateAsync(user, model.Password);
+                user = await userManager.FindByNameAsync(user.UserName);
+                var userRole = await roleManager.FindByNameAsync("Użytkownik");
+                var addToRoleResult = await userManager.AddToRoleAsync(user, userRole.NormalizedName);
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, isPersistent: false);
