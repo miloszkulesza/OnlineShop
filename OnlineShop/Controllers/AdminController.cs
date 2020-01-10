@@ -25,6 +25,8 @@ namespace OnlineShop.Controllers
         private IOrderRepository orderRepository;
         private IUserRolesRepository userRolesRepository;
         private IOrderPositionRepository orderPositionRepository;
+        private IPasswordValidator<AppUser> passwordValidator;
+        private IPasswordHasher<AppUser> passwordHasher;
 
         public AdminController(
             IProductRepository productRepository,
@@ -33,7 +35,9 @@ namespace OnlineShop.Controllers
             UserManager<AppUser> userManager,
             IOrderRepository orderRepository,
             IUserRolesRepository userRolesRepository,
-            IOrderPositionRepository orderPositionRepository)
+            IOrderPositionRepository orderPositionRepository,
+            IPasswordValidator<AppUser> passwordValidator,
+            IPasswordHasher<AppUser> passwordHasher)
         {
             this.productRepository = productRepository;
             this.categoryRepository = categoryRepository;
@@ -42,6 +46,8 @@ namespace OnlineShop.Controllers
             this.orderRepository = orderRepository;
             this.userRolesRepository = userRolesRepository;
             this.orderPositionRepository = orderPositionRepository;
+            this.passwordValidator = passwordValidator;
+            this.passwordHasher = passwordHasher;
         }
 
         public IActionResult Index()
@@ -461,6 +467,109 @@ namespace OnlineShop.Controllers
             }
             else
                 return await EditRole(model.RoleId);
+        }
+
+        public async Task<IActionResult> EditUser(string id)
+        {
+            EditUserViewModel vm = new EditUserViewModel();
+            if (!string.IsNullOrEmpty(id))
+            {
+                var user = await userManager.FindByIdAsync(id);
+                if(user != null)
+                {
+                    vm = new EditUserViewModel
+                    {
+                        ApartmentNumber = user.ApartmentNumber,
+                        BuildingNumber = user.BuildingNumber,
+                        City = user.City,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        PhoneNumber = user.PhoneNumber,
+                        Street = user.Street,
+                        ZipCode = user.ZipCode
+                    };
+                }
+            }
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel vm)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(vm.Email);
+                if(user == null)
+                {
+                    user = new AppUser
+                    {
+                        ApartmentNumber = vm.ApartmentNumber,
+                        BuildingNumber = vm.BuildingNumber,
+                        City = vm.City,
+                        Email = vm.Email,
+                        FirstName = vm.FirstName,
+                        LastName = vm.LastName,
+                        PhoneNumber = vm.PhoneNumber,
+                        Street = vm.Street,
+                        UserName = vm.Email,
+                        ZipCode = vm.ZipCode
+                    };
+                    if(string.IsNullOrEmpty(vm.Password))
+                    {
+                        ModelState.AddModelError("", "Nie podano hasła");
+                        return View(vm);
+                    }
+                    var passwordValidateResult = await passwordValidator.ValidateAsync(userManager, user, vm.Password);
+                    if(!passwordValidateResult.Succeeded)
+                    {
+                        AddErrorsFromResult(passwordValidateResult);
+                        return View(vm);
+                    }
+                    if(!vm.Password.Equals(vm.ConfirmPassword))
+                    {
+                        ModelState.AddModelError("", "Podane hasła nie są takie same");
+                        return View(vm);
+                    }
+                    await userManager.CreateAsync(user, vm.Password);
+                    var createdUser = await userManager.FindByNameAsync(vm.Email);
+                    await userManager.AddToRoleAsync(createdUser, "Użytkownik");
+                    TempData["SuccessMessage"] = "Udało się utworzyć użytkownika";
+                    return RedirectToAction("Users");
+                }
+                else
+                {
+                    user.ApartmentNumber = vm.ApartmentNumber;
+                    user.BuildingNumber = vm.BuildingNumber;
+                    user.City = vm.City;
+                    user.Email = vm.Email;
+                    user.FirstName = vm.FirstName;
+                    user.LastName = vm.LastName;
+                    user.PhoneNumber = vm.PhoneNumber;
+                    user.Street = vm.Street;
+                    user.UserName = vm.Email;
+                    user.ZipCode = vm.ZipCode;
+                    if(!string.IsNullOrEmpty(vm.Password))
+                    {                        
+                        var passwordValidateResult = await passwordValidator.ValidateAsync(userManager, user, vm.Password);
+                        if (!passwordValidateResult.Succeeded)
+                        {
+                            AddErrorsFromResult(passwordValidateResult);
+                            return View(vm);
+                        }
+                        if (!vm.Password.Equals(vm.ConfirmPassword))
+                        {
+                            ModelState.AddModelError("", "Podane hasła nie są takie same");
+                            return View(vm);
+                        }
+                        user.PasswordHash = passwordHasher.HashPassword(user, vm.Password);
+                    }
+                    await userManager.UpdateAsync(user);
+                    TempData["SuccessMessage"] = "Udało się edytować użytkownika";
+                    return RedirectToAction("Users");
+                }
+            }
+            return View(vm);
         }
 
         private void AddErrorsFromResult(IdentityResult result)

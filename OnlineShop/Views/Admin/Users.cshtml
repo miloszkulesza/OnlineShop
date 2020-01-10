@@ -7,6 +7,7 @@
 <hr />
 
 <div style="margin-bottom:10px">
+    <a asp-action="EditUser" class="btn btn-success">Dodaj</a>
     <a asp-action="Index" class="btn btn-primary">Powrót</a>
 </div>
 
@@ -29,8 +30,7 @@
                 <td scope="col">@user.LastName</td>
                 <td scope="col">@user.PhoneNumber</td>
                 <td scope="col">
-                    <a class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
-                    <a class="btn btn-danger w-100" style="margin-bottom:5px;">Usuń</a>
+                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-primary w-100" style="margin-bottom:5px;">Edytuj</a>
                 </td>
             </tr>
         }
