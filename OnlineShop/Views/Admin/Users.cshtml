@@ -7,7 +7,10 @@
 <hr />
 
 <div style="margin-bottom:10px">
-    <a asp-action="EditUser" class="btn btn-success">Dodaj</a>
+    @if (User.IsInRole("Administrator"))
+    {
+        <a asp-action="AddUser" class="btn btn-success">Dodaj</a>
+    }
     <a asp-action="Index" class="btn btn-primary">Powrót</a>
 </div>
 

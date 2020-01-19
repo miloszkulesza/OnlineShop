@@ -412,6 +412,7 @@ namespace OnlineShop.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> EditRole(string id)
         {
             IdentityRole role = await roleManager.FindByIdAsync(id);
@@ -433,6 +434,7 @@ namespace OnlineShop.Controllers
             });
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> EditRole(RoleModificationViewModel model)
         {
@@ -570,6 +572,12 @@ namespace OnlineShop.Controllers
                 }
             }
             return View(vm);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AddUser()
+        {
+            return RedirectToAction("EditUser");
         }
 
         private void AddErrorsFromResult(IdentityResult result)
