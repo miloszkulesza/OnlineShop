@@ -1,4 +1,7 @@
 ﻿@model ProductDetailsViewModel
+@{ 
+    ViewData["Title"] = Model.Product.Name;
+}
 
 <h3>@Model.Product.Name</h3>
 <hr />
