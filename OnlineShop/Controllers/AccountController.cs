@@ -95,6 +95,11 @@ namespace OnlineShop.Controllers
                 var user = new AppUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, ApartmentNumber = model.ApartmentNumber,
                     BuildingNumber = model.BuildingNumber, City = model.City, PhoneNumber = model.PhoneNumber, Street = model.Street, ZipCode = model.ZipCode };
                 var result = await userManager.CreateAsync(user, model.Password);
+                if(!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Hasło wymaga co najmniej 8 znaków, jednej wielkiej litery, jednej cyfry i jednego znaku specjalnego");
+                    return View(model);
+                }
                 user = await userManager.FindByNameAsync(user.UserName);
                 var userRole = await roleManager.FindByNameAsync("Użytkownik");
                 var addToRoleResult = await userManager.AddToRoleAsync(user, userRole.NormalizedName);
