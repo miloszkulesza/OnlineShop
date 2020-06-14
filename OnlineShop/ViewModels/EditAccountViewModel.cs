@@ -20,6 +20,7 @@ namespace OnlineShop.ViewModels
         [Required(ErrorMessage = "Podaj numer budynku")]
         [Display(Name = "Nr budynku")]
         public string BuildingNumber { get; set; }
+        [Display(Name = "Nr lokalu")]
         public string ApartmentNumber { get; set; }
         [Required(ErrorMessage = "Podaj miasto")]
         [Display(Name = "Miasto")]
